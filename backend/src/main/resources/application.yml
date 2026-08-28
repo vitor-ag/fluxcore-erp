@@ -1,0 +1,24 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: fluxcore-erp
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:mysql://localhost:3306/fluxcore_db?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=America/Sao_Paulo}
+    username: ${SPRING_DATASOURCE_USERNAME:fluxcore}
+    password: ${SPRING_DATASOURCE_PASSWORD:fluxcore}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.MySQLDialect
+
+# CORS liberado para o frontend local em desenvolvimento (ajustar em produção)
+fluxcore:
+  cors:
+    allowed-origins: http://localhost:4200
