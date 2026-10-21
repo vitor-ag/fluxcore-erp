@@ -9,10 +9,12 @@ spring:
     username: ${SPRING_DATASOURCE_USERNAME:fluxcore}
     password: ${SPRING_DATASOURCE_PASSWORD:fluxcore}
     driver-class-name: com.mysql.cj.jdbc.Driver
+  flyway:
+    enabled: true
   jpa:
     hibernate:
-      ddl-auto: update
-    show-sql: true
+      ddl-auto: validate
+    show-sql: false
     properties:
       hibernate:
         format_sql: true
