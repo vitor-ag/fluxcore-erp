@@ -1,0 +1,102 @@
+:root {
+
+  --color-primary: #2563eb;
+  --color-sidebar-bg: #0f172a;
+  --color-sidebar-text: #94a3b8;
+  --color-sidebar-text-active: #ffffff;
+  --color-sidebar-hover: rgba(255, 255, 255, 0.06);
+  --color-sidebar-active: rgba(37, 99, 235, 0.2);
+  --color-bg: #f8fafc;
+  --color-text: #0f172a;
+  --color-surface: #ffffff;
+  --color-border: #e2e8f0;
+  --color-text-muted: #64748b;
+  --color-accent: #4f5bd5;
+  --color-success: #16a34a;
+  --color-danger: #dc2626;
+  --color-warning: #d97706;
+  --radius-lg: 12px;
+  --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.04);
+
+  /* Espaçamento (escala de 8px) */
+  --space-1: 8px;
+  --space-2: 16px;
+  --space-3: 24px;
+  --space-4: 32px;
+
+
+  --radius: 8px;
+  --sidebar-width: 240px;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--color-bg);
+  color: var(--color-text);
+}
+
+/* Cada "tom" define só --tone; badge, barra, alerta e card derivam dele */
+.tone-neutral { --tone: var(--color-accent); }
+.tone-success { --tone: var(--color-success); }
+.tone-danger  { --tone: var(--color-danger); }
+.tone-warning { --tone: var(--color-warning); }
+
+/* Painel branco reutilizado por todos os blocos */
+.panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  height: 100%;
+  padding: var(--space-3);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+}
+
+.panel__header--row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: var(--space-2);
+}
+
+.panel__titulo { font-size: 14px; font-weight: 600; }
+.panel__sub { margin-top: 2px; font-size: 12px; color: var(--color-text-muted); }
+
+.badge {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+  color: var(--tone);
+  background: color-mix(in srgb, var(--tone) 12%, white);
+}
+
+.progress {
+  height: 6px;
+  border-radius: 999px;
+  background: var(--color-border);
+  overflow: hidden;
+}
+.progress__bar {
+  height: 100%;
+  border-radius: inherit;
+  background: var(--tone);
+}
+
+.link {
+  font-size: 12px;
+  font-weight: 500;
+  text-decoration: none;
+  color: var(--color-accent);
+}
+.link:hover { text-decoration: underline; }

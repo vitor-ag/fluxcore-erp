@@ -1,0 +1,29 @@
+:host { display: block; }
+
+.metas { display: flex; flex-direction: column; gap: var(--space-3); }
+
+.meta { display: flex; flex-direction: column; gap: var(--space-1); }
+.meta + .meta { padding-top: var(--space-3); border-top: 1px solid var(--color-border); }
+
+.meta__linha { display: flex; justify-content: space-between; align-items: center; }
+.meta__nome { font-size: 14px; font-weight: 500; }
+
+.meta__progresso { display: flex; align-items: center; gap: var(--space-2); }
+.meta__progresso .progress { flex: 1; min-width: 40px; }
+
+.meta__detalhe { font-size: 11px; color: var(--color-text-muted); white-space: nowrap; }
+
+.rodape {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: auto;
+  padding-top: var(--space-2);
+  border-top: 1px solid var(--color-border);
+  font-size: 12px;
+  color: var(--color-text-muted);
+}
+
+.rodape__linha { display: flex; justify-content: space-between; }
+.rodape strong { font-weight: 600; color: var(--color-text); }
+.rodape .positivo { color: var(--color-success); }

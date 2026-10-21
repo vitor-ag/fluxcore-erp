@@ -1,0 +1,61 @@
+<section class="panel">
+  <header class="panel__header--row">
+    <div>
+      <h2 class="panel__titulo">Fluxo de caixa</h2>
+      <p class="panel__sub">Realizado vs. previsto</p>
+    </div>
+
+    <div class="segmentado" role="group" aria-label="Período">
+      @for (p of periodos; track p) {
+        <button type="button" [class.ativo]="periodoAtivo() === p" (click)="periodoAtivo.set(p)">
+          {{ p }}
+        </button>
+      }
+    </div>
+  </header>
+
+  <svg
+    class="grafico"
+    [attr.viewBox]="'0 0 ' + largura + ' ' + altura"
+    role="img"
+    aria-label="Gráfico de fluxo de caixa: realizado versus previsto"
+  >
+    <defs>
+      <linearGradient id="gradRealizado" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" style="stop-color: var(--color-accent); stop-opacity: 0.18" />
+        <stop offset="100%" style="stop-color: var(--color-accent); stop-opacity: 0" />
+      </linearGradient>
+    </defs>
+
+    <!-- Região futura (após "Hoje") -->
+    <rect
+      class="futuro"
+      [attr.x]="xHoje"
+      [attr.y]="yTopoArea"
+      [attr.width]="xFim - xHoje"
+      [attr.height]="yChao - yTopoArea"
+    />
+
+    <!-- Grade e eixo Y -->
+    @for (t of ticks; track t.texto) {
+      <line class="grade" [attr.x1]="xInicio" [attr.x2]="xFim" [attr.y1]="t.y" [attr.y2]="t.y" />
+      <text class="eixo" [attr.x]="xInicio - 8" [attr.y]="t.y" text-anchor="end" dominant-baseline="middle">
+        {{ t.texto }}
+      </text>
+    }
+
+    <!-- Eixo X -->
+    @for (r of rotulos; track r.texto) {
+      <text class="eixo" [attr.x]="r.x" [attr.y]="yChao + 18" text-anchor="middle">{{ r.texto }}</text>
+    }
+
+    <path class="area" [attr.d]="areaRealizado" fill="url(#gradRealizado)" />
+    <path class="linha-previsto" [attr.d]="caminhoPrevisto" />
+    <path class="linha-realizado" [attr.d]="caminhoRealizado" />
+  </svg>
+
+  <div class="legenda">
+    <span class="legenda__item"><i class="traco traco--previsto"></i> Previsto</span>
+    <span class="legenda__item"><i class="traco traco--realizado"></i> Realizado</span>
+  </div>
+</section>

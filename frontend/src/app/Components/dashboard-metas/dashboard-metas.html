@@ -1,0 +1,35 @@
+<section class="panel">
+  <header>
+    <h2 class="panel__titulo">Metas do mês</h2>
+    <p class="panel__sub">{{ dados().subtitulo }}</p>
+  </header>
+
+  <div class="metas">
+    @for (meta of dados().metas; track meta.titulo) {
+      <div class="meta tone-{{ meta.tom }}">
+        <div class="meta__linha">
+          <span class="meta__nome">{{ meta.titulo }}</span>
+          <span class="badge">{{ meta.status }}</span>
+        </div>
+
+        <div class="meta__progresso">
+          <div class="progress">
+            <div class="progress__bar" [style.width.%]="meta.percentual"></div>
+          </div>
+          <span class="meta__detalhe">{{ meta.detalhe }}</span>
+        </div>
+      </div>
+    }
+  </div>
+
+  <footer class="rodape">
+    <div class="rodape__linha">
+      <span>Resultado líquido</span>
+      <strong class="positivo">{{ dados().resultadoLiquido }}</strong>
+    </div>
+    <div class="rodape__linha">
+      <span>Margem estimada</span>
+      <strong>{{ dados().margemEstimada }}</strong>
+    </div>
+  </footer>
+</section>

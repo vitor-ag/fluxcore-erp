@@ -1,0 +1,21 @@
+.dashboard {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.dashboard__cards {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--space-2);
+}
+
+.dashboard__linha { display: grid; gap: var(--space-3); }
+.dashboard__linha--grafico { grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); }
+.dashboard__linha--listas { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+
+@media (max-width: 1100px) {
+  .dashboard__cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .dashboard__linha--grafico,
+  .dashboard__linha--listas { grid-template-columns: minmax(0, 1fr); }
+}

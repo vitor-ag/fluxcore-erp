@@ -1,0 +1,35 @@
+<nav class="menu">
+  <h3 class="menu__logo">FluxCore</h3>
+
+  <ul class="menu__list">
+    <li><a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Dashboard</a></li>
+    <li><a routerLink="/vendas" routerLinkActive="active">Vendas</a></li>
+    <li><a routerLink="/compras" routerLinkActive="active">Compras</a></li>
+
+    <li class="menu__group" routerLinkActive="has-active">
+      <button
+        type="button"
+        class="menu__toggle"
+        [class.open]="financeiroAberto()"
+        [attr.aria-expanded]="financeiroAberto()"
+        aria-controls="submenu-financeiro"
+        (click)="toggleFinanceiro()"
+      >
+        Financeiro
+        <span class="menu__chevron" aria-hidden="true"></span>
+      </button>
+
+      <div id="submenu-financeiro" class="menu__submenu" [class.open]="financeiroAberto()">
+        <ul class="menu__sublist">
+          <li><a routerLink="/contasPagar" routerLinkActive="active">Contas a pagar</a></li>
+          <li><a routerLink="/contasReceber" routerLinkActive="active">Contas a receber</a></li>
+          <li><a routerLink="/fluxoCaixa" routerLinkActive="active">Fluxo de caixa</a></li>
+          <li><a routerLink="/resultado" routerLinkActive="active">Resultado</a></li>
+        </ul>
+      </div>
+    </li>
+
+    <li><a routerLink="/estoque" routerLinkActive="active">Estoque</a></li>
+    <li><a routerLink="/clientes" routerLinkActive="active">Clientes</a></li>
+  </ul>
+</nav>

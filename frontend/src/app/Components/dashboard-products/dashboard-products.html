@@ -1,0 +1,29 @@
+<section class="panel">
+  <header class="panel__header--row">
+    <div>
+      <h2 class="panel__titulo">Produtos com estoque baixo</h2>
+      <p class="panel__sub">Abaixo do ponto de reposição</p>
+    </div>
+    <a class="link" routerLink="/estoque">Ver tudo ↗</a>
+  </header>
+
+  <ul class="lista">
+    @for (produto of produtos(); track produto.nome) {
+      <li class="produto">
+        <div class="produto__linha">
+          <span class="produto__nome">{{ produto.nome }}</span>
+          <strong class="produto__qtd">{{ produto.quantidade }}</strong>
+        </div>
+        <div class="produto__linha produto__linha--sub">
+          <span>{{ produto.detalhe }}</span>
+          <span>{{ produto.minimo }}</span>
+        </div>
+        <div class="progress tone-danger">
+          <div class="progress__bar" [style.width.%]="produto.percentual"></div>
+        </div>
+      </li>
+    }
+  </ul>
+
+  <button type="button" class="reposicao">Gerar pedido de reposição</button>
+</section>

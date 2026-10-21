@@ -1,0 +1,24 @@
+<section class="panel">
+  <header class="panel__header--row">
+    <div>
+      <h2 class="panel__titulo">Alertas recentes</h2>
+      <p class="panel__sub">Situações que precisam de atenção</p>
+    </div>
+    <span class="badge tone-danger">{{ alertas().length }} ativos</span>
+  </header>
+
+  <ul class="lista">
+    @for (alerta of alertas(); track alerta.titulo) {
+      <li class="alerta tone-{{ alerta.tom }}">
+        <span class="alerta__icone" aria-hidden="true">!</span>
+
+        <div class="alerta__texto">
+          <strong class="alerta__titulo">{{ alerta.titulo }}</strong>
+          <p class="alerta__descricao">{{ alerta.descricao }}</p>
+        </div>
+
+        <a class="link" [routerLink]="alerta.rota">{{ alerta.link }} ↗</a>
+      </li>
+    }
+  </ul>
+</section>
