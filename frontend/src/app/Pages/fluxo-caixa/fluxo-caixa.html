@@ -1,1 +1,42 @@
-<p>fluxo-caixa works!</p>
+<section class="caixa">
+  <app-title titulo="Fluxo de caixa" subtitulo="Movimentações efetivas da conta da empresa" />
+
+  <app-caixa-resumo
+    [saldo]="saldo()"
+    [entradas]="entradas()"
+    [saidas]="saidas()"
+    [transacoes]="transacoes()"
+    [dias]="dias"
+  />
+
+  <app-caixa-grafico [serie]="serie()" />
+
+  <section class="caixa__lista">
+    <header class="caixa__cabecalho">
+      <div>
+        <h2 class="panel__titulo">Transações do período</h2>
+        <p class="panel__sub">
+          {{ lista().length }} {{ lista().length === 1 ? 'transação encontrada' : 'transações encontradas' }}
+        </p>
+      </div>
+
+      <div class="busca">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="11" cy="11" r="7" />
+          <path d="m20 20-3.5-3.5" />
+        </svg>
+        <input
+          #campo
+          class="input"
+          type="search"
+          placeholder="Buscar por descrição ou categoria"
+          aria-label="Buscar transações por descrição ou categoria"
+          [value]="busca()"
+          (input)="busca.set(campo.value)"
+        />
+      </div>
+    </header>
+
+    <app-caixa-table [movimentos]="lista()" />
+  </section>
+</section>

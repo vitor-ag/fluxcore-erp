@@ -1,5 +1,5 @@
 import { Component, input } from '@angular/core';
-import { MetasMes } from '../../Models/dashboard-model/dashboard-model';
+import { MetasMes } from '../../Models/dashboard-model';
 
 @Component({
   selector: 'app-dashboard-metas',

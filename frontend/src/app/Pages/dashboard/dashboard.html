@@ -1,9 +1,9 @@
 <section class="dashboard">
-  <app-dashboard-title titulo="Visão geral" subtitulo="Atualizado agora · setembro 2026" />
+  <app-title titulo="Visão geral" subtitulo="Atualizado agora · setembro 2026" />
 
   <div class="dashboard__cards">
     @for (card of cards; track card.titulo) {
-      <app-dashboard-card [dados]="card" />
+      <app-card [dados]="card" />
     }
   </div>
 

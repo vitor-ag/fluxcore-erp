@@ -1,0 +1,22 @@
+:host { display: block; }
+
+.tabela { min-width: 640px; }
+
+/* Cabeçalho mais discreto que o das outras tabelas, como no Figma */
+.tabela th {
+  background: transparent;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.tabela td { padding-top: 12px; padding-bottom: 12px; }
+
+.dir { text-align: right; }
+.descricao { font-size: 14px; }
+
+.entrada { font-weight: 500; color: var(--color-success); }
+.saida { font-weight: 500; color: var(--color-danger); }
+
+.valor { font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap; }

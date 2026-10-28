@@ -1,17 +1,17 @@
 import { Component } from '@angular/core';
 import { DashboardAlerts } from '../../Components/dashboard-alerts/dashboard-alerts';
-import { DashboardCard } from '../../Components/dashboard-card/dashboard-card';
+import { Card } from '../../Components/card/card'; 
 import { DashboardFluxoCaixa } from '../../Components/dashboard-fluxo-caixa/dashboard-fluxo-caixa';
 import { DashboardMetas } from '../../Components/dashboard-metas/dashboard-metas';
 import { DashboardProducts } from '../../Components/dashboard-products/dashboard-products';
-import { DashboardTitle } from '../../Components/dashboard-title/dashboard-title';
-import { ALERTAS, CARDS, PRODUTOS, METAS } from '../../Mocks/dashboard-mock/dashboard-mock'; 
+import { ALERTAS, CARDS, PRODUTOS, METAS } from '../../Mocks/dashboard-mock'; 
+import { Title } from '../../Components/title/title';
 
 @Component({
   selector: 'app-dashboard',
   imports: [
-    DashboardTitle,
-    DashboardCard,
+    Title,
+    Card,
     DashboardFluxoCaixa,
     DashboardMetas,
     DashboardAlerts,

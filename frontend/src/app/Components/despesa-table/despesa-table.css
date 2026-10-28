@@ -1,0 +1,11 @@
+:host { display: block; }
+
+.tabela { min-width: 900px; }
+
+/* Linha vencida: fundo avermelhado e barra à esquerda */
+.vencida { background: color-mix(in srgb, var(--color-danger) 4%, white); }
+.vencida:hover { background: color-mix(in srgb, var(--color-danger) 7%, white); }
+.vencida td:first-child { box-shadow: inset 3px 0 0 var(--color-danger); }
+
+.data-vencida { font-weight: 500; color: var(--color-danger); }
+.concluido { color: var(--color-text-muted); }

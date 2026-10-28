@@ -1,0 +1,15 @@
+:host { display: block; }
+
+.topo {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  padding: var(--space-3);
+}
+
+.filtros { display: flex; flex-wrap: wrap; align-items: flex-end; gap: var(--space-2); }
+
+.campo--select { width: 168px; }
+.campo--select .input { width: 100%; }

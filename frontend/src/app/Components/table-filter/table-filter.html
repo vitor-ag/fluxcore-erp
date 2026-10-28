@@ -1,0 +1,48 @@
+<div class="topo">
+  <div>
+    <h2 class="panel__titulo">Vendas no período</h2>
+    <p class="panel__sub">
+      {{ total() }} {{ total() === 1 ? 'venda encontrada' : 'vendas encontradas' }} · mais recentes primeiro
+    </p>
+  </div>
+
+  <div class="filtros">
+    <label class="campo campo--busca">
+      <span>Buscar cliente</span>
+      <span class="busca">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="11" cy="11" r="7" />
+          <path d="m20 20-3.5-3.5" />
+        </svg>
+        <input
+          #busca
+          class="input"
+          type="search"
+          placeholder="Nome do cliente"
+          [value]="filtros().busca"
+          (input)="alterar('busca', busca.value)"
+        />
+      </span>
+    </label>
+
+    <label class="campo campo--select">
+      <span>Tipo</span>
+      <select #tipo class="input" (change)="alterar('tipo', tipo.value)">
+        <option value="" [selected]="!filtros().tipo">Todos os tipos</option>
+        @for (t of tipos; track t) {
+          <option [value]="t" [selected]="filtros().tipo === t">{{ tipoInfo[t].rotulo }}</option>
+        }
+      </select>
+    </label>
+
+    <label class="campo campo--select">
+      <span>Status</span>
+      <select #status class="input" (change)="alterar('status', status.value)">
+        <option value="" [selected]="!filtros().status">Todos</option>
+        @for (s of statusLista; track s) {
+          <option [value]="s" [selected]="filtros().status === s">{{ statusInfo[s].rotulo }}</option>
+        }
+      </select>
+    </label>
+  </div>
+</div>

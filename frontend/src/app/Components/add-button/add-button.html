@@ -1,0 +1,19 @@
+<button type="button" class="btn btn--primary" (click)="abrir()">
+  <svg class="btn__icone" viewBox="0 0 24 24" aria-hidden="true">
+    <path d="M12 5v14M5 12h14" />
+  </svg>
+  {{ rotulo() }}
+</button>
+
+<dialog #dialog class="modal" aria-labelledby="titulo-modal">
+  <form (submit)="enviar($event)" novalidate>
+    <h2 id="titulo-modal" class="modal__titulo">{{ titulo() }}</h2>
+
+    <ng-content />
+
+    <div class="modal__acoes">
+      <button type="button" class="btn btn--ghost" (click)="fechar()">Cancelar</button>
+      <button type="submit" class="btn btn--primary">{{ textoSalvar() }}</button>
+    </div>
+  </form>
+</dialog>

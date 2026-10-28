@@ -1,0 +1,25 @@
+<div class="filter">
+  <label class="campo">
+    <span>De</span>
+    <input
+      #de
+      class="input"
+      type="date"
+      [value]="periodo().de"
+      [max]="periodo().ate"
+      (change)="alterar('de', de.value)"
+    />
+  </label>
+
+  <label class="campo">
+    <span>Até</span>
+    <input
+      #ate
+      class="input"
+      type="date"
+      [value]="periodo().ate"
+      [min]="periodo().de"
+      (change)="alterar('ate', ate.value)"
+    />
+  </label>
+</div>

@@ -1,0 +1,36 @@
+<div class="tabela-wrapper">
+  <table class="tabela">
+    <thead>
+      <tr>
+        <th scope="col">Título</th>
+        <th scope="col">Categoria</th>
+        <th scope="col">Pagamento</th>
+        <th scope="col">Vencimento</th>
+        <th scope="col">Valor</th>
+        <th scope="col">Conta</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      @for (compra of compras(); track compra.id) {
+        <tr>
+          <td>
+            <span class="tabela__principal">{{ compra.titulo }}</span>
+            @if (compra.detalhe) {
+              <span class="tabela__sub">{{ compra.detalhe }}</span>
+            }
+          </td>
+          <td><span class="badge tone-muted">{{ categoriaInfo[compra.categoria] }}</span></td>
+          <td>{{ pagamentoInfo[compra.pagamento] }}</td>
+          <td>{{ compra.vencimento | date: 'dd/MM/yyyy' }}</td>
+          <td class="tabela__valor">{{ formatarValor(compra.valor) }}</td>
+          <td class="conta">{{ compra.conta }}</td>
+        </tr>
+      } @empty {
+        <tr>
+          <td colspan="6" class="tabela__vazio">Nenhuma compra lançada ainda.</td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>

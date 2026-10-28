@@ -1,0 +1,22 @@
+.compras { display: flex; flex-direction: column; gap: var(--space-3); }
+
+.compras__topo {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.form { display: flex; flex-direction: column; gap: var(--space-2); }
+
+/* Cabeçalho e tabela dividem o mesmo painel branco */
+.compras__lista {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+}
+
+.compras__cabecalho { padding: var(--space-3); }

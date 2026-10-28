@@ -1,0 +1,22 @@
+<section [class]="'resumo tone-' + (positivo() ? 'success' : 'danger')">
+  <div class="resumo__principal">
+    <span class="resumo__rotulo">Saldo do período</span>
+    <strong class="resumo__saldo">{{ saldoTexto() }}</strong>
+    <span class="resumo__nota">Últimos {{ dias() }} dias · apenas movimentações confirmadas</span>
+  </div>
+
+  <dl class="resumo__totais">
+    <div class="total">
+      <dt>Total de entradas</dt>
+      <dd class="entrada">{{ entradasTexto() }}</dd>
+    </div>
+    <div class="total">
+      <dt>Total de saídas</dt>
+      <dd class="saida">{{ saidasTexto() }}</dd>
+    </div>
+    <div class="total">
+      <dt>Transações</dt>
+      <dd>{{ transacoes() }}</dd>
+    </div>
+  </dl>
+</section>

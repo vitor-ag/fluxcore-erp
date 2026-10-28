@@ -1,6 +1,6 @@
 import { Component, input } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { ProdutoBaixo } from '../../Models/dashboard-model/dashboard-model';
+import { ProdutoBaixo } from '../../Models/dashboard-model';
 
 @Component({
   selector: 'app-dashboard-products',
