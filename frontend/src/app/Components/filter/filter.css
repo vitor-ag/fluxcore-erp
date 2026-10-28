@@ -1,0 +1,2 @@
+:host { display: block; }
+.filter { display: flex; gap: var(--space-1); }

@@ -1,0 +1,32 @@
+<div class="topo">
+  <div>
+    <h2 class="panel__titulo">Despesas do mês</h2>
+    <p class="panel__sub">
+      {{ total() }} {{ total() === 1 ? 'conta encontrada' : 'contas encontradas' }} · vencimento mais próximo primeiro
+    </p>
+  </div>
+
+  <div class="filtros">
+    <label class="campo campo--select">
+      <span>Tipo</span>
+      <select #tipo class="input" (change)="alterar('tipo', tipo.value)">
+        <option value="" [selected]="!filtros().tipo">Todos os tipos</option>
+        @for (t of tipos; track t) {
+          <option [value]="t" [selected]="filtros().tipo === t">{{ tipoInfo[t].rotulo }}</option>
+        }
+      </select>
+    </label>
+
+    <label class="campo campo--select">
+      <span>Status</span>
+      <select #status class="input" (change)="alterar('status', status.value)">
+        <option value="" [selected]="!filtros().status">Todos</option>
+        @for (s of statusLista; track s) {
+          <option [value]="s" [selected]="filtros().status === s">{{ statusInfo[s].rotulo }}</option>
+        }
+      </select>
+    </label>
+
+    <app-filter [(periodo)]="periodo" />
+  </div>
+</div>

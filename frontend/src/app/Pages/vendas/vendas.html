@@ -1,0 +1,59 @@
+<section class="vendas">
+  <header class="vendas__topo">
+    <app-title titulo="Vendas" subtitulo="Registre e acompanhe as vendas realizadas." />
+
+    <div class="vendas__acoes">
+      <app-filter [(periodo)]="periodo" />
+        <app-add-button
+        #modal
+        rotulo="Nova venda"
+        titulo="Nova venda"
+        textoSalvar="Salvar venda"
+        (abriu)="resetarForm()"
+        (salvou)="salvar(modal)"
+      >
+        <div class="form" [formGroup]="form">
+          <label class="campo">
+            <span>Cliente</span>
+            <input class="input" formControlName="cliente" placeholder="Nome do cliente" />
+            @if (invalido('cliente')) { <small class="erro">Informe o nome do cliente.</small> }
+          </label>
+
+          <label class="campo">
+            <span>Tipo</span>
+            <select class="input" formControlName="tipo">
+              @for (t of tipos; track t) {
+                <option [value]="t">{{ tipoInfo[t].rotulo }}</option>
+              }
+            </select>
+          </label>
+
+          <div class="linha">
+            <label class="campo">
+              <span>Data da venda</span>
+              <input class="input" type="date" formControlName="data" />
+              @if (invalido('data')) { <small class="erro">Informe a data.</small> }
+            </label>
+
+            <label class="campo">
+              <span>Valor (R$)</span>
+              <input class="input" type="number" step="0.01" min="0" formControlName="valor" placeholder="0,00" />
+              @if (invalido('valor')) { <small class="erro">Informe um valor maior que zero.</small> }
+            </label>
+          </div>
+        </div>
+      </app-add-button>
+    </div>
+  </header>
+
+  <div class="vendas__cards">
+    @for (card of cards(); track card.titulo) {
+      <app-card [dados]="card" />
+    }
+  </div>
+
+  <section class="vendas__lista">
+    <app-table-filter [total]="vendasFiltradas().length" [(filtros)]="filtros" />
+    <app-table [vendas]="vendasFiltradas()" />
+  </section>
+</section>

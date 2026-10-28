@@ -1,0 +1,28 @@
+.vendas { display: flex; flex-direction: column; gap: var(--space-3); }
+
+.vendas__topo {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.vendas__acoes { display: flex; align-items: flex-end; gap: var(--space-2); flex-wrap: wrap; }
+
+.vendas__cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-2); }
+
+/* O filtro e a tabela dividem o mesmo painel branco, como no Figma */
+.vendas__lista {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+}
+
+@media (max-width: 900px) {
+  .vendas__cards { grid-template-columns: minmax(0, 1fr); }
+}
+
+.form { display: flex; flex-direction: column; gap: var(--space-2); }

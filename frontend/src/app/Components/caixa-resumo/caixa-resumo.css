@@ -1,0 +1,42 @@
+:host { display: block; }
+
+/* A cor do tom (verde ou vermelho) vem do saldo ser positivo ou negativo */
+.resumo {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  padding: var(--space-3);
+  border: 1px solid color-mix(in srgb, var(--tone) 30%, white);
+  border-radius: var(--radius-lg);
+  background: color-mix(in srgb, var(--tone) 8%, white);
+}
+
+.resumo__principal { display: flex; flex-direction: column; gap: 4px; }
+.resumo__rotulo { font-size: 14px; font-weight: 500; }
+
+.resumo__saldo {
+  font-size: 40px;
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  color: var(--tone);
+}
+
+.resumo__nota { font-size: 12px; color: var(--color-text-muted); }
+
+.resumo__totais { display: flex; }
+
+.total {
+  padding: 0 var(--space-3);
+  border-left: 1px solid color-mix(in srgb, var(--tone) 20%, white);
+}
+.total:first-child { border-left: none; }
+.total:last-child { padding-right: 0; }
+
+dt { font-size: 12px; color: var(--color-text-muted); }
+dd { margin-top: 4px; font-size: 22px; font-weight: 700; }
+
+.entrada { color: var(--color-success); }
+.saida { color: var(--color-danger); }

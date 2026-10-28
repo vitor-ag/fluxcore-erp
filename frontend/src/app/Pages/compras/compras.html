@@ -1,0 +1,81 @@
+<section class="compras">
+  <header class="compras__topo">
+    <app-title titulo="Compras" subtitulo="Registre compras e despesas variáveis da operação." />
+
+    <app-add-button
+      #modal
+      rotulo="Nova compra"
+      titulo="Nova compra"
+      textoSalvar="Salvar compra"
+      (abriu)="resetarForm()"
+      (salvou)="salvar(modal)"
+    >
+      <div class="form" [formGroup]="form">
+        <label class="campo">
+          <span>Título</span>
+          <input class="input" formControlName="titulo" placeholder="Ex.: Reposição de cimento" />
+          @if (invalido('titulo')) { <small class="erro">Informe o título.</small> }
+        </label>
+
+        <label class="campo">
+          <span>Detalhe (opcional)</span>
+          <input class="input" formControlName="detalhe" placeholder="Ex.: 120 × Cimento CP-II 50kg" />
+        </label>
+
+        <div class="linha">
+          <label class="campo">
+            <span>Categoria</span>
+            <select class="input" formControlName="categoria">
+              @for (c of categorias; track c) {
+                <option [value]="c">{{ categoriaInfo[c] }}</option>
+              }
+            </select>
+          </label>
+
+          <label class="campo">
+            <span>Pagamento</span>
+            <select class="input" formControlName="pagamento">
+              @for (p of pagamentos; track p) {
+                <option [value]="p">{{ pagamentoInfo[p] }}</option>
+              }
+            </select>
+          </label>
+        </div>
+
+        <div class="linha">
+          <label class="campo">
+            <span>Vencimento</span>
+            <input class="input" type="date" formControlName="vencimento" />
+            @if (invalido('vencimento')) { <small class="erro">Informe o vencimento.</small> }
+          </label>
+
+          <label class="campo">
+            <span>Valor (R$)</span>
+            <input class="input" type="number" step="0.01" min="0" formControlName="valor" placeholder="0,00" />
+            @if (invalido('valor')) { <small class="erro">Informe um valor maior que zero.</small> }
+          </label>
+        </div>
+
+        <label class="campo">
+          <span>Conta</span>
+          <select class="input" formControlName="conta">
+            @for (conta of contas; track conta) {
+              <option [value]="conta">{{ conta }}</option>
+            }
+          </select>
+        </label>
+      </div>
+    </app-add-button>
+  </header>
+
+  <section class="compras__lista">
+    <header class="compras__cabecalho">
+      <h2 class="panel__titulo">Compras recentes</h2>
+      <p class="panel__sub">
+        {{ lista().length }} {{ lista().length === 1 ? 'lançamento encontrado' : 'lançamentos encontrados' }}
+      </p>
+    </header>
+
+    <app-compra-table [compras]="lista()" />
+  </section>
+</section>

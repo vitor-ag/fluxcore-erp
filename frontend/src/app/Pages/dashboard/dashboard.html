@@ -1,0 +1,19 @@
+<section class="dashboard">
+  <app-title titulo="Visão geral" subtitulo="Atualizado agora · setembro 2026" />
+
+  <div class="dashboard__cards">
+    @for (card of cards; track card.titulo) {
+      <app-card [dados]="card" />
+    }
+  </div>
+
+  <div class="dashboard__linha dashboard__linha--grafico">
+    <app-dashboard-fluxo-caixa />
+    <app-dashboard-metas [dados]="metas" />
+  </div>
+
+  <div class="dashboard__linha dashboard__linha--listas">
+    <app-dashboard-alerts [alertas]="alertas" />
+    <app-dashboard-products [produtos]="produtos" />
+  </div>
+</section>

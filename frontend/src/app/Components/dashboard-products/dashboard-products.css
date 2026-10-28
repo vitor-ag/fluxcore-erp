@@ -1,0 +1,39 @@
+:host { display: block; }
+
+.lista {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  list-style: none;
+}
+
+.produto { display: flex; flex-direction: column; gap: 4px; }
+
+.produto__linha { display: flex; justify-content: space-between; align-items: baseline; }
+.produto__nome { font-size: 14px; font-weight: 500; }
+.produto__qtd { font-size: 14px; font-weight: 700; color: var(--color-danger); }
+
+.produto__linha--sub { font-size: 12px; color: var(--color-text-muted); }
+.produto .progress { margin-top: 4px; }
+
+.reposicao {
+  margin-top: auto;
+  padding: 12px var(--space-2);
+  border: 1px solid color-mix(in srgb, var(--color-warning) 30%, white);
+  border-radius: var(--radius);
+  background: color-mix(in srgb, var(--color-warning) 8%, white);
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  text-align: left;
+  color: #b45309;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.reposicao:hover { background: color-mix(in srgb, var(--color-warning) 14%, white); }
+
+.reposicao:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}

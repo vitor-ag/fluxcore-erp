@@ -1,0 +1,235 @@
+:root {
+
+  --color-primary: #2563eb;
+  --color-sidebar-bg: #0f172a;
+  --color-sidebar-text: #94a3b8;
+  --color-sidebar-text-active: #ffffff;
+  --color-sidebar-hover: rgba(255, 255, 255, 0.06);
+  --color-sidebar-active: rgba(37, 99, 235, 0.2);
+  --color-bg: #f8fafc;
+  --color-text: #0f172a;
+  --color-surface: #ffffff;
+  --color-border: #e2e8f0;
+  --color-text-muted: #64748b;
+  --color-accent: #4f5bd5;
+  --color-success: #16a34a;
+  --color-danger: #dc2626;
+  --color-warning: #d97706;
+  --radius-lg: 12px;
+  --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.04);
+
+  /* Espaçamento (escala de 8px) */
+  --space-1: 8px;
+  --space-2: 16px;
+  --space-3: 24px;
+  --space-4: 32px;
+
+
+  --radius: 8px;
+  --sidebar-width: 240px;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--color-bg);
+  color: var(--color-text);
+}
+
+/* Cada "tom" define só --tone; badge, barra, alerta e card derivam dele */
+.tone-neutral { --tone: var(--color-accent); }
+.tone-success { --tone: var(--color-success); }
+.tone-danger  { --tone: var(--color-danger); }
+.tone-warning { --tone: var(--color-warning); }
+
+/* Painel branco reutilizado por todos os blocos */
+.panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  height: 100%;
+  padding: var(--space-3);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+}
+
+.panel__header--row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: var(--space-2);
+}
+
+.panel__titulo { font-size: 14px; font-weight: 600; }
+.panel__sub { margin-top: 2px; font-size: 12px; color: var(--color-text-muted); }
+
+.badge {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+  color: var(--tone);
+  background: color-mix(in srgb, var(--tone) 12%, white);
+}
+
+.progress {
+  height: 6px;
+  border-radius: 999px;
+  background: var(--color-border);
+  overflow: hidden;
+}
+.progress__bar {
+  height: 100%;
+  border-radius: inherit;
+  background: var(--tone);
+}
+
+.link {
+  font-size: 12px;
+  font-weight: 500;
+  text-decoration: none;
+  color: var(--color-accent);
+}
+.link:hover { text-decoration: underline; }
+
+.tone-muted { --tone: var(--color-text-muted); }
+
+/* Campos de formulário */
+.campo {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 12px;
+  color: var(--color-text-muted);
+}
+
+.input {
+  height: 40px;
+  padding: 0 12px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  background: var(--color-surface);
+  font-family: inherit;
+  font-size: 13px;
+  color: var(--color-text);
+}
+.input::placeholder { color: #94a3b8; }
+.input:focus-visible { outline: 2px solid var(--color-primary); outline-offset: 1px; }
+
+/* Botões */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 40px;
+  padding: 0 16px;
+  border: 1px solid transparent;
+  border-radius: var(--radius);
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.btn:focus-visible { outline: 2px solid var(--color-primary); outline-offset: 2px; }
+
+.btn--primary { background: var(--color-primary); color: #fff; }
+.btn--primary:hover { background: #1d4ed8; }
+
+.btn--ghost { background: var(--color-surface); border-color: var(--color-border); color: var(--color-text); }
+.btn--ghost:hover { background: var(--color-bg); }
+
+.btn--sm { height: 32px; padding: 0 12px; font-size: 13px; }
+
+/* Usados por conteúdo projetado dentro do modal */
+.linha { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-2); }
+.erro { font-size: 12px; color: var(--color-danger); }
+
+.btn__icone {
+  width: 14px;
+  height: 14px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.btn--primary .btn__icone { width: 16px; height: 16px; }
+
+/* Tabela compartilhada (Vendas e Compras) */
+.tabela-wrapper { overflow-x: auto; }
+.tabela { width: 100%; min-width: 760px; border-collapse: collapse; }
+
+.tabela th {
+  padding: 12px var(--space-3);
+  border-top: 1px solid var(--color-border);
+  background: #fafbfd;
+  text-align: left;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #94a3b8;
+}
+
+.tabela td {
+  padding: 16px var(--space-3);
+  border-top: 1px solid var(--color-border);
+  font-size: 13px;
+  vertical-align: middle;
+}
+
+.tabela tbody tr:hover { background: #f8fafc; }
+.tabela .badge { padding: 3px 8px; border-radius: 6px; font-size: 11px; }
+
+.tabela__principal { display: block; font-size: 14px; font-weight: 500; }
+.tabela__sub { display: block; margin-top: 2px; font-size: 12px; color: var(--color-text-muted); }
+.tabela__valor { font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.tabela__vazio { padding: 48px; text-align: center; color: var(--color-text-muted); }
+
+.tone-purple { --tone: #7e22ce; }
+
+/* Botão com borda azul (ações de linha) */
+.btn--outline {
+  background: var(--color-surface);
+  border-color: color-mix(in srgb, var(--color-primary) 35%, white);
+  color: var(--color-primary);
+}
+.btn--outline:hover { background: color-mix(in srgb, var(--color-primary) 6%, white); }
+
+/* Linha vencida/atrasada (Contas a pagar e a receber) */
+.vencida { background: color-mix(in srgb, var(--color-danger) 4%, white); }
+.vencida:hover { background: color-mix(in srgb, var(--color-danger) 7%, white); }
+.vencida td:first-child { box-shadow: inset 3px 0 0 var(--color-danger); }
+
+.data-vencida { font-weight: 500; color: var(--color-danger); }
+.concluido { color: var(--color-text-muted); }
+
+.tone-info { --tone: #0891b2; }
+
+/* Campo de busca com ícone */
+.busca { position: relative; display: block; }
+.busca .input { width: 100%; padding-left: 34px; }
+.busca svg {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  width: 14px;
+  height: 14px;
+  transform: translateY(-50%);
+  fill: none;
+  stroke: #94a3b8;
+  stroke-width: 2;
+  stroke-linecap: round;
+  pointer-events: none;
+}

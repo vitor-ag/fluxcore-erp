@@ -1,0 +1,117 @@
+:host {
+  display: block;
+}
+
+.menu {
+  width: var(--sidebar-width);
+  min-height: 100vh;
+  padding: var(--space-3) var(--space-2);
+  background: var(--color-sidebar-bg);
+  position: sticky;
+  top: 0;
+  align-self: flex-start;
+}
+
+.menu__logo {
+  padding: 0 var(--space-2);
+  margin-bottom: var(--space-4);
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--color-sidebar-text-active);
+}
+
+.menu__list,
+.menu__sublist {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+
+.menu__list a,
+.menu__toggle {
+  display: block;
+  width: 100%;
+  padding: 12px var(--space-2);
+  border: none;
+  border-radius: var(--radius);
+  background: transparent;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  text-align: left;
+  text-decoration: none;
+  color: var(--color-sidebar-text);
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.menu__list a:hover,
+.menu__toggle:hover {
+  background: var(--color-sidebar-hover);
+  color: var(--color-sidebar-text-active);
+}
+
+.menu__list a.active {
+  background: var(--color-sidebar-active);
+  color: var(--color-sidebar-text-active);
+}
+
+.menu__list a:focus-visible,
+.menu__toggle:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+/* ---------- Acordeão ---------- */
+
+.menu__toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+
+.menu__group.has-active > .menu__toggle {
+  color: var(--color-sidebar-text-active);
+}
+
+
+.menu__chevron {
+  width: 8px;
+  height: 8px;
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  transform: rotate(45deg);
+  transition: transform 0.2s;
+}
+
+.menu__toggle.open .menu__chevron {
+  transform: rotate(-135deg);
+}
+
+
+.menu__submenu {
+  display: grid;
+  grid-template-rows: 0fr;
+  visibility: hidden;
+  transition: grid-template-rows 0.25s ease, visibility 0.25s;
+}
+
+.menu__submenu.open {
+  grid-template-rows: 1fr;
+  visibility: visible;
+}
+
+.menu__sublist {
+  min-height: 0;
+  overflow: hidden;
+  padding-top: 4px;
+}
+
+
+.menu__sublist a {
+  padding-left: var(--space-4);
+  font-size: 13px;
+}

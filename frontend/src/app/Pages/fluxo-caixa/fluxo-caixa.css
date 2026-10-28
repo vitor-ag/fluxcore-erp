@@ -1,0 +1,21 @@
+.caixa { display: flex; flex-direction: column; gap: var(--space-3); }
+
+/* Cabeçalho e tabela dividem o mesmo painel branco */
+.caixa__lista {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+}
+
+.caixa__cabecalho {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  padding: var(--space-3);
+}
+
+.caixa__cabecalho .busca { width: 280px; max-width: 100%; }

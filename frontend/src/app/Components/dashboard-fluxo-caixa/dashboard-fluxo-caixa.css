@@ -1,0 +1,63 @@
+:host { display: block; }
+
+.panel { gap: var(--space-2); }
+
+.segmentado {
+  display: flex;
+  gap: 2px;
+  padding: 3px;
+  border-radius: var(--radius);
+  background: var(--color-bg);
+}
+
+.segmentado button {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--color-text-muted);
+  cursor: pointer;
+}
+
+.segmentado button.ativo {
+  background: var(--color-surface);
+  color: var(--color-text);
+  box-shadow: var(--shadow-sm);
+}
+
+.grafico { width: 100%; height: auto; }
+
+.futuro { fill: rgba(148, 163, 184, 0.06); }
+.grade { stroke: var(--color-border); stroke-dasharray: 3 4; }
+.eixo { fill: #94a3b8; font-size: 11px; }
+
+.linha-previsto {
+  fill: none;
+  stroke: #94a3b8;
+  stroke-width: 2;
+  stroke-dasharray: 5 4;
+}
+
+.linha-realizado {
+  fill: none;
+  stroke: var(--color-accent);
+  stroke-width: 2.5;
+  stroke-linecap: round;
+}
+
+.legenda {
+  display: flex;
+  justify-content: center;
+  gap: var(--space-3);
+  font-size: 12px;
+  color: var(--color-text-muted);
+}
+
+.legenda__item { display: flex; align-items: center; gap: 6px; }
+
+.traco { display: inline-block; width: 16px; height: 0; }
+.traco--previsto { border-top: 2px dashed #94a3b8; }
+.traco--realizado { border-top: 2px solid var(--color-accent); }

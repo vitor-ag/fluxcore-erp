@@ -1,0 +1,72 @@
+<section class="receber">
+  <header class="receber__topo">
+    <app-title
+      titulo="Contas a receber"
+      subtitulo="Acompanhe entradas previstas e mantenha seus recebimentos em dia."
+    />
+
+    <app-add-button
+      #modal
+      rotulo="Novo recebimento"
+      titulo="Novo recebimento"
+      textoSalvar="Salvar recebimento"
+      (abriu)="resetarForm()"
+      (salvou)="salvar(modal)"
+    >
+      <div class="form" [formGroup]="form">
+        <label class="campo">
+          <span>Cliente</span>
+          <input class="input" formControlName="cliente" placeholder="Nome do cliente" />
+          @if (invalido('cliente')) { <small class="erro">Informe o nome do cliente.</small> }
+        </label>
+
+        <label class="campo">
+          <span>Tipo de transação</span>
+          <select class="input" formControlName="tipo">
+            @for (t of tipos; track t) {
+              <option [value]="t">{{ tipoInfo[t].rotulo }}</option>
+            }
+          </select>
+        </label>
+
+        <label class="campo">
+          <span>Descrição (opcional)</span>
+          <input class="input" formControlName="detalhe" placeholder="Ex.: Manutenção hidráulica" />
+        </label>
+
+        <div class="linha">
+          <label class="campo">
+            <span>Data da venda/serviço</span>
+            <input class="input" type="date" formControlName="dataVenda" />
+            @if (invalido('dataVenda')) { <small class="erro">Informe a data.</small> }
+          </label>
+
+          <label class="campo">
+            <span>Valor (R$)</span>
+            <input class="input" type="number" step="0.01" min="0" formControlName="valor" placeholder="0,00" />
+            @if (invalido('valor')) { <small class="erro">Informe um valor maior que zero.</small> }
+          </label>
+        </div>
+
+        @if (comPrazo()) {
+          <label class="campo">
+            <span>Data de vencimento</span>
+            <input class="input" type="date" formControlName="vencimento" />
+            @if (vencimentoInvalido()) { <small class="erro">Informe o vencimento.</small> }
+          </label>
+        }
+      </div>
+    </app-add-button>
+  </header>
+
+  <div class="receber__cards">
+    @for (card of cards(); track card.titulo) {
+      <app-card [dados]="card" />
+    }
+  </div>
+
+  <section class="receber__lista">
+    <app-receber-filter [total]="lista().length" [(periodo)]="periodo" [(filtros)]="filtros" />
+    <app-receber-table [contas]="lista()" (marcarRecebido)="marcarComoRecebido($event)" />
+  </section>
+</section>

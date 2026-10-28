@@ -1,0 +1,33 @@
+<div class="tabela-wrapper">
+  <table class="tabela">
+    <thead>
+      <tr>
+        <th scope="col">Data</th>
+        <th scope="col">Descrição</th>
+        <th scope="col">Categoria</th>
+        <th scope="col">Tipo</th>
+        <th scope="col" class="dir">Valor</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      @for (m of movimentos(); track m.id) {
+        <tr>
+          <td>{{ m.data | date: 'dd/MM' }}</td>
+          <td class="descricao">{{ m.descricao }}</td>
+          <td>
+            <span class="badge tone-{{ categoriaInfo[m.categoria].tom }}">{{ categoriaInfo[m.categoria].rotulo }}</span>
+          </td>
+          <td [class]="m.tipo">{{ tipoInfo[m.tipo] }}</td>
+          <td class="dir valor" [class]="'dir valor ' + m.tipo">
+            {{ m.tipo === 'entrada' ? '+' : '–' }} {{ moeda(m.valor) }}
+          </td>
+        </tr>
+      } @empty {
+        <tr>
+          <td colspan="5" class="tabela__vazio">Nenhuma transação encontrada.</td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>

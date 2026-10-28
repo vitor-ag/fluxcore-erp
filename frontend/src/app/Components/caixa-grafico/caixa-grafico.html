@@ -1,0 +1,34 @@
+<section class="panel">
+  <header>
+    <h2 class="panel__titulo">Saldo ao longo do tempo</h2>
+    <p class="panel__sub">Evolução do saldo da conta</p>
+  </header>
+
+  <svg
+    class="grafico"
+    [attr.viewBox]="'0 0 ' + largura + ' ' + altura"
+    role="img"
+    aria-label="Gráfico da evolução do saldo da conta nos últimos 90 dias"
+  >
+    <defs>
+      <linearGradient id="gradSaldo" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" style="stop-color: var(--color-accent); stop-opacity: 0.18" />
+        <stop offset="100%" style="stop-color: var(--color-accent); stop-opacity: 0" />
+      </linearGradient>
+    </defs>
+
+    @for (t of g().ticksY; track t.texto) {
+      <line class="grade" [attr.x1]="xInicio" [attr.x2]="xFim" [attr.y1]="t.y" [attr.y2]="t.y" />
+      <text class="eixo" [attr.x]="xInicio - 10" [attr.y]="t.y" text-anchor="end" dominant-baseline="middle">
+        {{ t.texto }}
+      </text>
+    }
+
+    @for (t of g().ticksX; track t.texto) {
+      <text class="eixo" [attr.x]="t.x" [attr.y]="yBase + 22" text-anchor="middle">{{ t.texto }}</text>
+    }
+
+    <path [attr.d]="g().area" fill="url(#gradSaldo)" />
+    <path class="linha" [attr.d]="g().linha" />
+  </svg>
+</section>

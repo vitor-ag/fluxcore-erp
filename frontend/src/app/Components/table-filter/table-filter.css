@@ -1,0 +1,33 @@
+:host { display: block; }
+
+.topo {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  padding: var(--space-3);
+}
+
+.filtros { display: flex; flex-wrap: wrap; gap: var(--space-2); }
+
+.campo--busca { width: 200px; }
+.campo--select { width: 168px; }
+.campo--select .input { width: 100%; }
+
+.busca { position: relative; display: block; }
+.busca .input { width: 100%; padding-left: 34px; }
+
+.busca svg {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  width: 14px;
+  height: 14px;
+  transform: translateY(-50%);
+  fill: none;
+  stroke: #94a3b8;
+  stroke-width: 2;
+  stroke-linecap: round;
+  pointer-events: none;
+}
