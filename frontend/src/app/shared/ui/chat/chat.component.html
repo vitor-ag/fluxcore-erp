@@ -1,0 +1,118 @@
+<button
+  #launcher
+  type="button"
+  class="primary chat-launcher"
+  aria-haspopup="dialog"
+  aria-controls="fluxcore-chat"
+  [attr.aria-expanded]="opened()"
+  (click)="openChat()"
+>
+  <app-icon name="clients" />Assistente
+</button>
+<dialog
+  #dialog
+  id="fluxcore-chat"
+  aria-labelledby="chat-title"
+  aria-describedby="chat-description"
+  (cancel)="onCancel($event)"
+  (close)="onDialogClosed()"
+>
+  <header>
+    <div>
+      <h2 id="chat-title">Assistente FluxCore</h2>
+      <p id="chat-description">Consulte seu caixa, pendências e estoque.</p>
+    </div>
+    <button type="button" class="ghost" aria-label="Fechar assistente" (click)="closeChat()">
+      <app-icon name="close" />
+    </button>
+  </header>
+  <div class="chat-toolbar">
+    <span>Somente consulta</span>
+    <button
+      type="button"
+      class="ghost"
+      [disabled]="sending() || !messages().length"
+      (click)="newConversation()"
+    >
+      Nova conversa
+    </button>
+  </div>
+  <section #history class="chat-history" tabindex="0" aria-label="Histórico da conversa">
+    @if (!messages().length) {
+      <div class="chat-empty">
+        <h3>O que você quer consultar?</h3>
+        <p>Escolha uma pergunta ou escreva a sua.</p>
+        <div class="chat-suggestions">
+          @for (suggestion of suggestions; track suggestion) {
+            <button type="button" class="outline" (click)="suggest(suggestion)">
+              {{ suggestion }}
+            </button>
+          }
+        </div>
+      </div>
+    }
+    <ol
+      aria-label="Mensagens da conversa"
+      aria-live="polite"
+      aria-relevant="additions"
+      [attr.aria-busy]="sending()"
+    >
+      @for (message of messages(); track $index) {
+        <li [class.chat-user]="message.papel === 'usuario'">
+          <span class="chat-author">{{ message.papel === 'usuario' ? 'Você' : 'FluxCore' }}</span>
+          <p>{{ message.texto }}</p>
+        </li>
+      }
+    </ol>
+    @if (sending()) {
+      <p class="chat-status" role="status">Consultando os dados…</p>
+    }
+    @if (error()) {
+      <div class="chat-error">
+        <p role="alert">{{ error() }}</p>
+        <div>
+          <button type="button" class="outline" (click)="retry()">Tentar novamente</button>
+          <button type="button" class="ghost" (click)="editQuestion()">Editar pergunta</button>
+        </div>
+      </div>
+    }
+  </section>
+  <form (submit)="$event.preventDefault(); send()">
+    <label for="chat-question">Sua pergunta</label>
+    <textarea
+      #editor
+      id="chat-question"
+      class="fc-field"
+      rows="3"
+      maxlength="2000"
+      [formControl]="question"
+      [readOnly]="sending() || !!error()"
+      (keydown)="onKeydown($event)"
+      aria-describedby="chat-help chat-validation"
+      [attr.aria-invalid]="question.invalid && question.touched ? 'true' : null"
+      placeholder="Ex.: quanto tenho a receber?"
+    ></textarea>
+    <p id="chat-validation" class="validation">
+      @if (question.hasError('maxlength')) {
+        Use no máximo 2.000 caracteres.
+      }
+    </p>
+    <div class="chat-compose-actions">
+      <p id="chat-help">
+        Enter envia · Shift+Enter quebra linha<br />Até 2.000 caracteres por pergunta.
+      </p>
+      <button
+        type="submit"
+        class="primary"
+        [disabled]="sending() || !!error() || question.invalid || !question.value.trim()"
+      >
+        {{ sending() ? 'Consultando…' : 'Enviar' }}
+      </button>
+    </div>
+    <p class="chat-disclaimer">
+      As respostas usam os registros do FluxCore e podem conter erros. Confira informações
+      importantes nas telas. A conversa fica nesta sessão e é enviada ao serviço de IA para
+      responder.
+    </p>
+  </form>
+</dialog>

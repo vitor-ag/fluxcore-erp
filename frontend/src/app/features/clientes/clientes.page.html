@@ -1,0 +1,123 @@
+<app-page-state
+  title="Clientes"
+  layout="table"
+  [loading]="loading()"
+  [error]="loadError()"
+  (retry)="atualizar()"
+>
+  <div class="title action">
+    <div>
+      <h1>Clientes</h1>
+      <p>Contatos cadastrados.</p>
+    </div>
+    <app-button variant="primary" (pressed)="abrir()">Novo cliente</app-button>
+  </div>
+  <section class="customer-catalog" aria-labelledby="customer-list-title">
+    <div class="catalog-heading">
+      <h2 id="customer-list-title">Lista de clientes</h2>
+      <p class="catalog-count" aria-live="polite">
+        <span class="numeric-text">{{ filteredCustomers().length }}</span>
+        {{ filteredCustomers().length === 1 ? 'cliente encontrado' : 'clientes encontrados' }}
+      </p>
+    </div>
+    <div class="catalog-tools">
+      <label class="catalog-search" for="customer-search"
+        >Buscar cliente<input
+          id="customer-search"
+          class="fc-field"
+          type="search"
+          [(ngModel)]="busca"
+          placeholder="Nome, documento ou e-mail" /></label
+      ><label for="customer-order"
+        >Ordenar por<select
+          id="customer-order"
+          class="fc-field"
+          [ngModel]="customerOrder()"
+          (ngModelChange)="customerOrder.set($event)"
+        >
+          <option value="nome">Nome · A–Z</option>
+          <option value="tipo">Tipo de pessoa</option>
+        </select></label
+      >
+    </div>
+    <div
+      class="table-scroll"
+      [class.table-empty]="filteredCustomers().length === 0"
+      tabindex="0"
+      role="region"
+      aria-label="Clientes cadastrados"
+    >
+      <table>
+        <caption class="sr-only">
+          Contatos de clientes cadastrados no FluxCore
+        </caption>
+        <thead>
+          <tr>
+            <th scope="col">Nome</th>
+            <th scope="col">Telefone</th>
+            <th scope="col">Documento</th>
+            <th scope="col">E-mail</th>
+            <th scope="col">Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (c of filteredCustomers(); track c.id) {
+            <tr>
+              <td class="customer-name">
+                <b>{{ c.nome }}</b
+                ><small>{{ c.tipo }}</small>
+              </td>
+              <td class="numeric-text customer-code">{{ c.telefone || '—' }}</td>
+              <td class="numeric-text customer-code">{{ c.documento || '—' }}</td>
+              <td class="customer-email">{{ c.email || '—' }}</td>
+              <td>
+                <div class="row-actions">
+                  <app-button variant="ghost" [disabled]="saving()" (pressed)="abrir(c)"
+                    >Editar<span class="sr-only"> {{ c.nome }}</span></app-button
+                  ><app-button variant="danger" [disabled]="saving()" (pressed)="excluir(c)"
+                    >Excluir<span class="sr-only"> {{ c.nome }}</span></app-button
+                  >
+                </div>
+              </td>
+            </tr>
+          } @empty {
+            <tr>
+              <td colspan="5">
+                @if (query().trim()) {
+                  <app-empty-state
+                    kind="search"
+                    title="Nenhum cliente encontrado."
+                    description="Tente outro nome, documento ou e-mail."
+                  />
+                  <div class="empty-action">
+                    <app-button (pressed)="busca = ''">Limpar busca</app-button>
+                  </div>
+                } @else {
+                  <app-empty-state
+                    kind="empty"
+                    title="Nenhum cliente cadastrado."
+                    description="Cadastre um cliente para manter os contatos aqui."
+                  />
+                  <div class="empty-action">
+                    <app-button (pressed)="abrir()">Cadastrar cliente</app-button>
+                  </div>
+                }
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </section>
+</app-page-state>
+@if (modal) {
+  <app-record-form
+    kind="cliente"
+    [initial]="form"
+    [editing]="editando"
+    [saving]="carregando"
+    [error]="erro"
+    (saved)="salvar($event)"
+    (dismissed)="modal = false"
+  />
+}

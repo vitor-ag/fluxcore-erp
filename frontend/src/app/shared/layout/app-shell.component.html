@@ -1,0 +1,53 @@
+<a class="skip-link" href="#main-content" (click)="skipToContent($event)">Ir para o conteúdo</a>
+<header class="app-header" [class.menu-open]="mobileMenuOpen()">
+  <div class="masthead" [attr.inert]="mobileMenuOpen() ? '' : null">
+    <a class="brand-link" routerLink="/dashboard" aria-label="FluxCore, início"><app-brand /></a>
+    <div class="masthead-actions">
+      <app-theme-toggle />
+      @if (auth.token()) {
+        <button type="button" class="outline" (click)="auth.clear()">Sair</button>
+      }
+      <button
+        type="button"
+        class="mobile-toggle outline"
+        aria-controls="main-navigation"
+        [attr.aria-expanded]="mobileMenuOpen()"
+        (click)="openMenu()"
+      >
+        <app-icon name="menu" />Menu
+      </button>
+    </div>
+  </div>
+  <nav
+    id="main-navigation"
+    [class.is-open]="mobileMenuOpen()"
+    [attr.aria-hidden]="mobile() && !mobileMenuOpen() ? 'true' : null"
+    aria-label="Navegação principal"
+    (keydown)="onMenuKeydown($event)"
+  >
+    <button type="button" class="mobile-close ghost" (click)="closeMenu()">
+      <app-icon name="close" />Fechar menu
+    </button>
+    @for (link of links; track link.path) {
+      <a [routerLink]="link.path" routerLinkActive="active" ariaCurrentWhenActive="page">{{
+        link.label
+      }}</a>
+    }
+  </nav>
+</header>
+<main id="main-content" [attr.inert]="mobileMenuOpen() ? '' : null">
+  <section class="content">
+    @if (!auth.token()) {
+      <form (submit)="$event.preventDefault(); authenticate(email.value, senha.value, nome.value.trim())">
+        <label>E-mail <input #email type="email" autocomplete="username" required /></label>
+        <label>Senha <input #senha type="password" autocomplete="current-password" required /></label>
+        <label>Nome para criar uma conta <input #nome autocomplete="name" /></label>
+        <button type="submit">Entrar ou criar conta</button>
+        @if (loginError()) { <p role="alert">{{ loginError() }}</p> }
+      </form>
+    }
+    @if (auth.token()) { <router-outlet /> }
+  </section>
+</main>
+<app-toast />
+<div [attr.inert]="mobileMenuOpen() ? '' : null"><app-chat /></div>

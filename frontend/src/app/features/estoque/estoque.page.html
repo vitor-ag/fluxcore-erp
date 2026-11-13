@@ -1,0 +1,203 @@
+<app-page-state
+  title="Estoque"
+  layout="table"
+  [loading]="loading()"
+  [error]="loadError()"
+  (retry)="atualizar()"
+>
+  <div class="title action">
+    <div>
+      <h1>Estoque</h1>
+      <p>Reposição e catálogo de produtos.</p>
+    </div>
+    <app-button variant="primary" (pressed)="abrir()">Novo produto</app-button>
+  </div>
+  @if (produtos.length) {
+    <section class="replenishment" aria-labelledby="replenishment-title">
+      <div class="replenishment-heading">
+        <h2 id="replenishment-title">Reposição</h2>
+        <p>
+          <strong class="numeric-text">{{ estoqueBaixo }}</strong>
+          {{ estoqueBaixo === 1 ? 'produto no mínimo ou abaixo' : 'produtos no mínimo ou abaixo' }}
+        </p>
+      </div>
+      @if (lowStock().length) {
+        <p class="section-caption">Maior falta em relação ao estoque mínimo primeiro.</p>
+        <ul class="replenishment-list">
+          @for (p of lowStock().slice(0, 4); track p.id) {
+            <li>
+              <div class="replenishment-product">
+                <b>{{ p.nome }}</b
+                ><small
+                  ><span class="stock-quantity numeric-text">{{ p.quantidade }}</span> em estoque ·
+                  mínimo
+                  <span class="stock-quantity numeric-text">{{ p.estoqueMinimo }}</span></small
+                >
+              </div>
+              <app-button [disabled]="saving()" (pressed)="abrir(p)"
+                >Editar quantidade<span class="sr-only"> de {{ p.nome }}</span></app-button
+              >
+            </li>
+          }
+        </ul>
+        @if (lowStock().length > 4) {
+          <details class="replenishment-more">
+            <summary>Ver outros {{ lowStock().length - 4 }} produtos para reposição</summary>
+            <ul class="replenishment-list">
+              @for (p of lowStock().slice(4); track p.id) {
+                <li>
+                  <div class="replenishment-product">
+                    <b>{{ p.nome }}</b
+                    ><small
+                      ><span class="stock-quantity numeric-text">{{ p.quantidade }}</span> em
+                      estoque · mínimo
+                      <span class="stock-quantity numeric-text">{{ p.estoqueMinimo }}</span></small
+                    >
+                  </div>
+                  <app-button [disabled]="saving()" (pressed)="abrir(p)"
+                    >Editar quantidade<span class="sr-only"> de {{ p.nome }}</span></app-button
+                  >
+                </li>
+              }
+            </ul>
+          </details>
+        }
+      } @else {
+        <p class="section-caption">Todos os produtos estão acima do estoque mínimo.</p>
+      }
+      <details class="quantity-help">
+        <summary>Como atualizar as quantidades</summary>
+        <p>
+          Informe a quantidade atual ao editar o produto. Os registros de compra e venda não alteram
+          esse número.
+        </p>
+      </details>
+    </section>
+  }
+  <section class="product-catalog" aria-labelledby="product-list-title">
+    <div class="catalog-heading">
+      <h2 id="product-list-title">Catálogo de produtos</h2>
+      <p class="catalog-count">
+        <span class="numeric-text">{{ produtos.length }}</span>
+        {{ produtos.length === 1 ? 'produto cadastrado' : 'produtos cadastrados' }}
+      </p>
+    </div>
+    <div class="catalog-tools">
+      <label class="catalog-search" for="product-search"
+        >Buscar produto<input
+          id="product-search"
+          class="fc-field"
+          type="search"
+          [(ngModel)]="busca"
+          placeholder="Nome, SKU ou categoria" /></label
+      ><label class="stock-check"
+        ><input
+          type="checkbox"
+          [ngModel]="onlyLowStock()"
+          (ngModelChange)="onlyLowStock.set($event)"
+        />Somente estoque baixo</label
+      >
+    </div>
+    <div class="catalog-context">
+      <span aria-live="polite"
+        ><span class="numeric-text">{{ filteredProducts().length }}</span>
+        {{ filteredProducts().length === 1 ? 'produto encontrado' : 'produtos encontrados' }}</span
+      ><span class="catalog-valuation"
+        ><span>Catálogo completo a preço de venda</span>
+        <strong class="amount">{{ valorEstoque | currency: 'BRL' }}</strong></span
+      >
+    </div>
+    <div
+      class="table-scroll"
+      [class.table-empty]="filteredProducts().length === 0"
+      tabindex="0"
+      role="region"
+      aria-label="Produtos cadastrados"
+    >
+      <table>
+        <caption class="sr-only">
+          Produtos, quantidades atuais, estoque mínimo e preço de venda
+        </caption>
+        <thead>
+          <tr>
+            <th scope="col">Nome</th>
+            <th scope="col">Categoria</th>
+            <th scope="col" class="amount">Quantidade</th>
+            <th scope="col" class="amount">Mínimo</th>
+            <th scope="col" class="amount">Preço de venda</th>
+            <th scope="col">Status</th>
+            <th scope="col">Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (p of filteredProducts(); track p.id) {
+            <tr>
+              <td class="product-name">
+                <b>{{ p.nome }}</b
+                ><small class="numeric-text">{{ p.sku || 'Sem SKU' }}</small>
+              </td>
+              <td>{{ p.categoria || 'Sem categoria' }}</td>
+              <td class="amount" [class.red]="p.quantidade <= p.estoqueMinimo">
+                {{ p.quantidade }}
+              </td>
+              <td class="amount">{{ p.estoqueMinimo }}</td>
+              <td class="amount">{{ p.preco | currency: 'BRL' : 'symbol' : '1.2-2' : 'pt-BR' }}</td>
+              <td>
+                <app-status-badge
+                  [label]="p.quantidade <= p.estoqueMinimo ? 'Baixo' : 'Regular'"
+                  [tone]="p.quantidade <= p.estoqueMinimo ? 'danger' : 'neutral'"
+                />
+              </td>
+              <td>
+                <div class="row-actions">
+                  <app-button variant="ghost" [disabled]="saving()" (pressed)="abrir(p)"
+                    >Editar<span class="sr-only"> {{ p.nome }}</span></app-button
+                  ><app-button variant="danger" [disabled]="saving()" (pressed)="excluir(p)"
+                    >Excluir<span class="sr-only"> {{ p.nome }}</span></app-button
+                  >
+                </div>
+              </td>
+            </tr>
+          } @empty {
+            <tr>
+              <td colspan="7">
+                @if (query().trim() || onlyLowStock()) {
+                  <app-empty-state
+                    kind="search"
+                    title="Nenhum produto encontrado."
+                    description="Altere a busca ou retire o filtro de estoque baixo."
+                  />
+                  <div class="empty-action">
+                    <app-button (pressed)="busca = ''; onlyLowStock.set(false)"
+                      >Limpar filtros</app-button
+                    >
+                  </div>
+                } @else {
+                  <app-empty-state
+                    kind="empty"
+                    title="Nenhum produto cadastrado."
+                    description="Cadastre um produto e informe a quantidade atual."
+                  />
+                  <div class="empty-action">
+                    <app-button (pressed)="abrir()">Cadastrar produto</app-button>
+                  </div>
+                }
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </section>
+</app-page-state>
+@if (modal) {
+  <app-record-form
+    kind="produto"
+    [initial]="form"
+    [editing]="editando"
+    [saving]="carregando"
+    [error]="erro"
+    (saved)="salvar($event)"
+    (dismissed)="modal = false"
+  />
+}

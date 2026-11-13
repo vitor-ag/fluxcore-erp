@@ -1,0 +1,191 @@
+<app-page-state
+  title="Dashboard geral"
+  [loading]="loading()"
+  [error]="loadError()"
+  (retry)="atualizar()"
+>
+  <div class="title action">
+    <h1>Dashboard geral</h1>
+    <app-button (pressed)="atualizar()">Atualizar dados</app-button>
+  </div>
+
+  <nav class="dashboard-shortcuts" aria-label="Acesso às áreas do sistema">
+    <a routerLink="/vendas">Vendas</a>
+    <a routerLink="/compras">Compras</a>
+    <a routerLink="/financeiro">Financeiro</a>
+    <a routerLink="/estoque">Estoque</a>
+    <a routerLink="/clientes">Clientes</a>
+  </nav>
+
+  <section class="balance-summary" aria-label="Resumo dos lançamentos">
+    <div class="balance-main">
+      <h2>Saldo registrado</h2>
+      <p class="balance-value" [class.negative]="saldoRealizado < 0">
+        {{ saldoRealizado | currency: 'BRL' }}
+      </p>
+      <p class="balance-caption">Lançamentos concluídos</p>
+      <details class="context-help">
+        <summary>Como é calculado</summary>
+        <p>
+          Entradas concluídas menos saídas concluídas, partindo de zero. Não representa o saldo de
+          contas bancárias.
+        </p>
+      </details>
+    </div>
+    <div class="pending-aside">
+      <dl class="pending-totals">
+        <div>
+          <dt class="pending-label incoming">
+            <a routerLink="/financeiro" [queryParams]="{ aba: 'Receber' }">A receber</a>
+          </dt>
+          <dd>{{ pendentesEntrada | currency: 'BRL' }}</dd>
+        </div>
+        <div>
+          <dt class="pending-label outgoing">
+            <a routerLink="/financeiro" [queryParams]="{ aba: 'Pagar' }">A pagar</a>
+          </dt>
+          <dd>{{ pendentesSaida | currency: 'BRL' }}</dd>
+        </div>
+      </dl>
+      <p class="pending-caption">Lançamentos pendentes</p>
+    </div>
+  </section>
+
+  <div class="dashboard-details">
+    <section class="ledger-section history-panel" aria-labelledby="history-heading">
+      <div class="section-heading">
+        <h2 id="history-heading">Histórico do saldo</h2>
+        <div class="history-period" role="group" aria-label="Período do histórico">
+          @for (
+            period of [
+              { value: 'all', label: 'Tudo' },
+              { value: '30', label: '30 dias' },
+              { value: '60', label: '60 dias' },
+              { value: '90', label: '90 dias' },
+            ];
+            track period.value
+          ) {
+            <button
+              class="outline"
+              type="button"
+              [attr.aria-pressed]="chartPeriod() === period.value"
+              (click)="chartPeriod.set(period.value)"
+            >
+              {{ period.label }}
+            </button>
+          }
+        </div>
+      </div>
+      <app-cash-chart [points]="chartPoints()" />
+      <figure class="movement-comparison" aria-labelledby="comparison-heading">
+        <figcaption id="comparison-heading">Entradas e saídas registradas</figcaption>
+        <p>Inclui pendentes; cancelados ficam fora.</p>
+        <dl>
+          <div>
+            <dt>Entradas</dt>
+            <dd class="amount">{{ resumo.entradas | currency: 'BRL' }}</dd>
+            <span class="comparison-track" aria-hidden="true"
+              ><span
+                class="comparison-bar comparison-in"
+                [style.width.%]="(resumo.entradas / comparisonMaximum()) * 100"
+              ></span
+            ></span>
+          </div>
+          <div>
+            <dt>Saídas</dt>
+            <dd class="amount">{{ resumo.saidas | currency: 'BRL' }}</dd>
+            <span class="comparison-track" aria-hidden="true"
+              ><span
+                class="comparison-bar comparison-out"
+                [style.width.%]="(resumo.saidas / comparisonMaximum()) * 100"
+              ></span
+            ></span>
+          </div>
+        </dl>
+        @if (!resumo.total) {
+          <p>Nenhum lançamento registrado ainda.</p>
+        }
+      </figure>
+    </section>
+
+    <section class="stock-notice" aria-labelledby="stock-heading">
+      <div class="section-heading">
+        <div>
+          <h2 id="stock-heading">Reposição</h2>
+          <p>
+            {{ estoqueBaixo }}
+            {{
+              estoqueBaixo === 1 ? 'produto no mínimo ou abaixo' : 'produtos no mínimo ou abaixo'
+            }}
+          </p>
+        </div>
+        <a routerLink="/estoque">Ver estoque</a>
+      </div>
+      @if (lowStock().length) {
+        <ul class="stock-items">
+          @for (product of lowStock().slice(0, 3); track product.id) {
+            <li>
+              <span>{{ product.nome }}</span
+              ><span class="stock-quantity"
+                >{{ product.quantidade }} em estoque
+                <small>· mínimo {{ product.estoqueMinimo }}</small></span
+              >
+            </li>
+          }
+        </ul>
+      } @else {
+        <p class="stock-clear">Nenhum produto precisa de reposição.</p>
+      }
+    </section>
+  </div>
+
+  <section class="ledger-section pending-panel" aria-labelledby="pending-heading">
+    <div class="section-heading">
+      <div>
+        <h2 id="pending-heading">Pendências</h2>
+        <p>Por data de lançamento · mais antigos primeiro</p>
+      </div>
+      <a routerLink="/financeiro">Ver financeiro</a>
+    </div>
+    @if (pendingTransactions().length) {
+      <div
+        class="table-scroll"
+        tabindex="0"
+        role="region"
+        aria-label="Pendências por data de lançamento"
+      >
+        <table class="pending-table">
+          <caption class="sr-only">
+            Até cinco lançamentos pendentes mais antigos
+          </caption>
+          <thead>
+            <tr>
+              <th scope="col">Data do lançamento</th>
+              <th scope="col">Descrição</th>
+              <th scope="col">Tipo</th>
+              <th scope="col" class="amount">Valor</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (item of pendingTransactions().slice(0, 5); track item.id) {
+              <tr>
+                <td class="numeric-text">{{ item.data | date: 'dd/MM/yyyy' }}</td>
+                <td>
+                  <b>{{ item.descricao }}</b
+                  ><small>{{ item.categoria || 'Sem categoria' }}</small>
+                </td>
+                <td>{{ item.tipo === 'Entrada' ? 'A receber' : 'A pagar' }}</td>
+                <td class="amount">{{ item.valor | currency: 'BRL' }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    } @else {
+      <app-empty-state
+        title="Nenhuma pendência registrada."
+        description="Os lançamentos pendentes de entrada e saída aparecem aqui."
+      />
+    }
+  </section>
+</app-page-state>

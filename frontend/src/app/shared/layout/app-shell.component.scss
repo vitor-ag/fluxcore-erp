@@ -1,0 +1,107 @@
+:host {
+  display: block;
+}
+.app-header {
+  background: var(--fc-color-surface);
+  border-bottom: var(--fc-border-width) solid var(--fc-color-border);
+}
+.masthead,
+nav {
+  max-width: 1280px;
+  margin: auto;
+  padding-inline: var(--fc-space-8);
+}
+.masthead {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--fc-space-4);
+  min-height: 72px;
+  padding-block: var(--fc-space-3);
+}
+.brand-link {
+  display: inline-flex;
+  padding-block: var(--fc-space-1);
+  text-decoration: none;
+}
+.masthead-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: var(--fc-space-2);
+}
+nav {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--fc-space-1) var(--fc-space-6);
+}
+nav a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding-block: var(--fc-space-2);
+  border-bottom: var(--fc-border-emphasis) solid transparent;
+  color: var(--fc-color-muted);
+  font-size: var(--fc-font-size-sm);
+  text-decoration: none;
+}
+nav a:hover {
+  color: var(--fc-color-primary);
+}
+nav a.active {
+  border-bottom-color: var(--fc-color-primary);
+  color: var(--fc-color-primary);
+  font-weight: var(--fc-font-weight-semibold);
+}
+.mobile-toggle,
+.mobile-close {
+  display: none;
+}
+@media (max-width: 760px) {
+  .masthead {
+    flex-wrap: wrap;
+    padding: var(--fc-space-4);
+    gap: var(--fc-space-3);
+  }
+  .masthead-actions {
+    flex: 1 1 auto;
+  }
+  .mobile-toggle {
+    display: inline-flex;
+  }
+  nav {
+    display: none;
+  }
+  nav.is-open {
+    position: fixed;
+    z-index: 20;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    flex-wrap: nowrap;
+    gap: var(--fc-space-2);
+    max-width: none;
+    padding: var(--fc-space-6);
+    overflow-y: auto;
+    background: var(--fc-color-surface);
+  }
+  nav a {
+    min-height: 52px;
+    padding: var(--fc-space-3) var(--fc-space-2);
+    font-size: var(--fc-font-size-lg);
+  }
+  .mobile-close {
+    display: inline-flex;
+    align-self: flex-end;
+    margin-bottom: var(--fc-space-4);
+  }
+}
+@media (max-width: 420px) {
+  .masthead-actions {
+    flex-basis: 100%;
+    justify-content: space-between;
+  }
+}

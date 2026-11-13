@@ -1,0 +1,91 @@
+<app-page-state
+  title="Vendas"
+  layout="table"
+  [loading]="loading()"
+  [error]="loadError()"
+  (retry)="atualizar()"
+>
+  <div class="title action">
+    <div>
+      <h1>Vendas</h1>
+      <p>Entradas financeiras registradas.</p>
+    </div>
+    <app-button variant="primary" (pressed)="abrir()">Nova venda</app-button>
+  </div>
+  <section class="operation-summary" aria-label="Resumo das vendas nos filtros atuais">
+    <div class="operation-total">
+      <span>Total registrado</span>
+      <strong class="amount" [class.negative]="totalFiltrado < 0">{{
+        totalFiltrado | currency: 'BRL'
+      }}</strong>
+      <small>Valores dos filtros atuais, sem cancelados</small>
+    </div>
+    <dl class="operation-breakdown">
+      <div>
+        <dt>A receber</dt>
+        <dd class="amount" [class.negative]="totalPendente < 0">
+          {{ totalPendente | currency: 'BRL' }}
+        </dd>
+      </div>
+      <div>
+        <dt>Recebido</dt>
+        <dd class="amount" [class.negative]="totalConcluido < 0">
+          {{ totalConcluido | currency: 'BRL' }}
+        </dd>
+      </div>
+    </dl>
+  </section>
+  <app-transaction-filters
+    [query]="busca"
+    (queryChange)="busca = $event"
+    [status]="statusFiltro"
+    (statusChange)="statusFiltro = $event"
+    [from]="dataInicio"
+    (fromChange)="dataInicio = $event"
+    [until]="dataFim"
+    (untilChange)="dataFim = $event"
+    (clear)="limparFiltros()"
+  />
+  <app-record-table
+    [items]="paginaItens"
+    [total]="filtrados.length"
+    [busy]="saving()"
+    (edit)="abrir($event)"
+    (remove)="excluir($event)"
+    (settle)="baixar($event)"
+  />
+  <nav class="pagination" aria-label="Paginação de vendas">
+    <span
+      >{{ filtrados.length ? (pagina - 1) * porPagina + 1 : 0 }}–{{ fimPagina }} de
+      {{ filtrados.length }}</span
+    >
+    <div>
+      <button type="button" class="outline" [disabled]="pagina <= 1" (click)="mudarPagina(-1)">
+        Anterior</button
+      ><span>Página {{ pagina }} de {{ totalPaginas }}</span
+      ><button
+        type="button"
+        class="outline"
+        [disabled]="pagina >= totalPaginas"
+        (click)="mudarPagina(1)"
+      >
+        Próxima
+      </button>
+    </div>
+  </nav>
+  <details class="operation-help">
+    <summary>Sobre este registro</summary>
+    <p>A venda registra uma entrada financeira. A quantidade dos produtos é ajustada no Estoque.</p>
+  </details>
+</app-page-state>
+@if (modal) {
+  <app-record-form
+    kind="lancamento"
+    [initial]="form"
+    [editing]="editando"
+    [saving]="carregando"
+    [error]="erro"
+    (saved)="salvar($event)"
+    (dismissed)="modal = false"
+  />
+}

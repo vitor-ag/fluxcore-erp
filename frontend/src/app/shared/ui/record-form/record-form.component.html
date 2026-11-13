@@ -1,0 +1,77 @@
+<dialog #dialog class="dialog" aria-labelledby="record-title" (cancel)="cancel($event)">
+  <form [formGroup]="form" (ngSubmit)="submit()" novalidate [attr.aria-busy]="saving()">
+    <button
+      type="button"
+      class="close"
+      aria-label="Fechar formulário"
+      [disabled]="saving()"
+      (click)="cancel()"
+    >
+      <app-icon name="close" />
+    </button>
+    <header class="record-header">
+      <h2 id="record-title">
+        {{ editing() ? 'Editar' : 'Novo' }}
+        {{ kind() === 'produto' ? 'produto' : kind() === 'cliente' ? 'cliente' : 'lançamento' }}
+      </h2>
+    </header>
+    @if (error()) {
+      <p role="alert" class="validation">{{ error() }}</p>
+    }
+    @for (field of fields; track field.name) {
+      <label [for]="'record-' + field.name">{{ field.label }}</label>
+      <input
+        appInput
+        [attr.autofocus]="$first ? '' : null"
+        [attr.aria-required]="
+          form.controls[field.name].hasValidator(requiredValidator) ? 'true' : null
+        "
+        [id]="'record-' + field.name"
+        [type]="field.type"
+        [class.numeric-text]="
+          field.type === 'number' ||
+          field.type === 'date' ||
+          field.type === 'tel' ||
+          field.name === 'sku' ||
+          field.name === 'documento'
+        "
+        [class.amount]="field.type === 'number'"
+        [step]="field.step ?? 'any'"
+        [formControlName]="field.name"
+        [attr.aria-invalid]="message(field.name) ? 'true' : null"
+        [attr.aria-describedby]="message(field.name) ? 'error-' + field.name : null"
+      />
+      @if (message(field.name)) {
+        <p class="validation" [id]="'error-' + field.name">{{ message(field.name) }}</p>
+      }
+    }
+    @if (kind() === 'lancamento') {
+      <label for="record-tipo">Tipo</label>
+      <select appSelect id="record-tipo" formControlName="tipo">
+        <option>Entrada</option>
+        <option>Saída</option>
+      </select>
+      <label for="record-status">Status</label>
+      <select appSelect id="record-status" formControlName="status">
+        <option>Pago</option>
+        <option>Pendente</option>
+        @if (initial().status && initial().status !== 'Pago' && initial().status !== 'Pendente') {
+          <option [value]="initial().status">{{ initial().status }}</option>
+        }
+      </select>
+    }
+    @if (kind() === 'cliente') {
+      <label for="record-person-type">Tipo de pessoa</label>
+      <select appSelect id="record-person-type" formControlName="tipo">
+        <option>Pessoa física</option>
+        <option>Pessoa jurídica</option>
+      </select>
+    }
+    <div class="actions">
+      <app-button [disabled]="saving()" (pressed)="cancel()">Cancelar</app-button>
+      <app-button variant="primary" type="submit" [disabled]="saving()">{{
+        saving() ? 'Salvando…' : 'Salvar'
+      }}</app-button>
+    </div>
+  </form>
+</dialog>

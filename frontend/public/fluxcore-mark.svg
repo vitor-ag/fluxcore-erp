@@ -1,0 +1,19 @@
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 24 24"
+  role="img"
+  aria-labelledby="fluxcore-title"
+>
+  <title id="fluxcore-title">FluxCore</title>
+  <style>
+    :root {
+      color: #b74418;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        color: #ff956b;
+      }
+    }
+  </style>
+  <path fill="currentColor" d="M0 3h18l6 7H0z M0 14h24v7H6z" />
+</svg>
