@@ -38,5 +38,6 @@ export const routes: Routes = [
     data: { view: 'Clientes' },
     loadComponent: () => import('./features/clientes/clientes.page').then((m) => m.ClientesPage),
   },
+  { path: 'gestao', title: 'Gestão · FluxCore', loadComponent: () => import('./features/gestao/gestao').then((m) => m.Gestao) },
   { path: '**', redirectTo: 'dashboard' },
 ];

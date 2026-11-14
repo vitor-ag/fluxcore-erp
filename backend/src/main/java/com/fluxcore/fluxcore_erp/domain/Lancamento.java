@@ -15,6 +15,9 @@ public class Lancamento {
     @NotBlank private String tipo;
     @NotNull @Column(name = "data_vencimento") private LocalDate data;
     @Column(name = "categoria_texto") private String categoria;
+    @Column(name = "conta_financeira_id") private Integer contaFinanceiraId;
+    public Integer getContaFinanceiraId() { return contaFinanceiraId; }
+    public void setContaFinanceiraId(Integer value) { contaFinanceiraId = value; }
     private String status = "Pendente";
     public Lancamento() {}
     public Long getId(){return id;} public void setId(Long id){this.id=id;}

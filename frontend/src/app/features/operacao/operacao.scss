@@ -1,0 +1,16 @@
+dialog {
+  margin: auto;
+  width: min(92vw, 38rem);
+  max-height: 90dvh;
+  overflow: auto;
+  padding: var(--fc-space-6);
+  background: var(--fc-color-surface);
+  color: var(--fc-color-ink);
+  border: 1px solid var(--fc-color-border);
+  border-radius: var(--fc-radius-lg);
+}
+dialog::backdrop { background: var(--fc-color-overlay); }
+form, label, fieldset { display: grid; gap: var(--fc-space-3); }
+form { margin-top: var(--fc-space-4); }
+fieldset, details { margin: 0; padding: var(--fc-space-3); border: 1px solid var(--fc-color-border); border-radius: var(--fc-radius-md); }
+summary { cursor: pointer; }

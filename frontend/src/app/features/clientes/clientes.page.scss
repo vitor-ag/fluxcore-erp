@@ -69,3 +69,12 @@
     padding: 0 var(--fc-space-4) var(--fc-space-4);
   }
 }
+
+.catalog-tools {
+  padding: .85rem;
+  border-radius: var(--fc-radius-md);
+  background: var(--fc-color-navigation-soft);
+}
+.customer-catalog {
+  box-shadow: 0 8px 24px -22px var(--fc-color-ink);
+}

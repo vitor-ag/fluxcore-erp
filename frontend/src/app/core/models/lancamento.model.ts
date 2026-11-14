@@ -6,6 +6,7 @@ export interface Lancamento {
   data: string;
   categoria: string;
   status: string;
+  contaFinanceiraId?: number | null;
 }
 
 export interface ResumoLancamentos {

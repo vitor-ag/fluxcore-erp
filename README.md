@@ -1,6 +1,6 @@
 # FluxCore ERP
 
-ERP financeiro inteligente para micro e pequenas empresas, com organizador e previsão de fluxo de caixa, controle de estoque integrado ao caixa, e (em desenvolvimento futuro) chatbot e IA de recomendação estratégica.
+ERP financeiro inteligente para micro e pequenas empresas, com organizador e previsão de fluxo de caixa, controle de estoque integrado ao caixa, e (em desenvolvimento futuro) IA de recomendação estratégica. O assistente com Gemini já está integrado e pode ser configurado no backend.
 
 Projeto desenvolvido para a matéria **Startup Project One** — curso de Análise e Desenvolvimento de Sistemas.
 
@@ -45,7 +45,7 @@ Não é necessário instalar Java, Node ou MySQL na sua máquina — tudo roda d
 6. Acesse:
    - Frontend: http://localhost:4200
    - Backend (API): http://localhost:8080
-   - MySQL: localhost:3306 (usuário/senha definidos no `.env`)
+   - MySQL: localhost:3307 (usuário/senha definidos no `.env`)
 
 ## Fluxo de trabalho (Git)
 
@@ -96,16 +96,51 @@ fluxcore-erp/
 └── README.md
 ```
 
-## Desenvolvimento sem Docker completo (opcional)
+## Dados fictícios para apresentação
 
-Se preferir rodar o backend ou frontend direto na máquina (com hot-reload mais rápido), você pode subir só o banco de dados via Docker:
+Com a API iniciada, execute na raiz do projeto usando PowerShell 7:
 
-```bash
-docker compose up mysql
+```powershell
+$senhaDemo = Read-Host 'Senha da conta de demonstração (mínimo de 8 caracteres)' -MaskInput
+./demonstracao.ps1 -Senha $senhaDemo
 ```
 
-E rodar backend (`cd backend && ./mvnw spring-boot:run`) e frontend (`cd frontend && ng serve`) normalmente na máquina, desde que tenha Java 17+, Maven e Node/Angular CLI instalados localmente.
+Entre em http://localhost:4200 com **apresentacao@fluxcore.example** e a senha escolhida. Para repetir a carga no mesmo banco, use a mesma senha. Se a API estiver em outro endereço, informe `-Api` com a URL base incluindo `/api`.
 
+A carga usa a API para inserir dados fictícios da Mercearia Aurora, incluindo produtos, fornecedores, contas, histórico financeiro, metas e movimentações de estoque. Use um banco de desenvolvimento ou apresentação, pois a carga adiciona registros ao banco em uso.
+
+## Assistente e administração de usuários
+
+Para habilitar as respostas do assistente, preencha `GEMINI_API_KEY` no `.env` e recrie o backend com `docker compose up -d backend`. Veja [a configuração do Gemini](backend/CONFIGURAR-GEMINI.md).
+
+Para habilitar a administração, crie uma conta pelo FluxCore, coloque seu e-mail em `FLUXCORE_ADMIN_EMAIL` no `.env` e recrie o backend. Entre nessa conta e abra **Gestão** para alterar perfis e status de usuários.
+
+## Desenvolvimento sem Docker completo
+
+Use Java 21, Node.js 24 e MySQL 8. Para iniciar apenas o banco, rode `docker compose up -d mysql`. O backend usa Flyway para aplicar as migrações ao iniciar.
+
+Em PowerShell, na raiz do projeto:
+
+```powershell
+$env:SPRING_DATASOURCE_URL = 'jdbc:mysql://127.0.0.1:3307/fluxcore_db?serverTimezone=America/Sao_Paulo'
+$env:SPRING_DATASOURCE_USERNAME = 'fluxcore'
+$env:SPRING_DATASOURCE_PASSWORD = 'fluxcore'
+Set-Location backend
+./mvnw.cmd spring-boot:run
+```
+
+Ajuste o nome do banco e as credenciais de acordo com o ambiente. Em outro terminal, na raiz:
+
+```powershell
+npm --prefix frontend ci
+npm --prefix frontend start
+```
+
+## Testes
+
+- Frontend: `npm --prefix frontend test -- --watch=false`
+- Build: `npm --prefix frontend run build`
+- Backend: na pasta `backend`, rode `./mvnw.cmd test` (ou `sh mvnw test` no Linux/macOS) com as mesmas variáveis de conexão ao MySQL.
 ## Parar o ambiente
 
 ```bash

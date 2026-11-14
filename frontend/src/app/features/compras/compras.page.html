@@ -10,7 +10,7 @@
       <h1>Compras</h1>
       <p>Compras e despesas registradas.</p>
     </div>
-    <app-button variant="primary" (pressed)="abrir()">Nova compra</app-button>
+    <app-operacao [compra]="true" (confirmed)="atualizar()" />
   </div>
   <section class="operation-summary" aria-label="Resumo das compras nos filtros atuais">
     <div class="operation-total">
@@ -73,13 +73,11 @@
       </button>
     </div>
   </nav>
-  <details class="operation-help">
-    <summary>Sobre este registro</summary>
-    <p>A compra registra uma saída financeira. A quantidade dos produtos é ajustada no Estoque.</p>
-  </details>
+  <details class="operation-help"><summary>Sobre este registro</summary><p>Ao confirmar, o sistema atualiza o estoque e gera o lançamento financeiro.</p></details>
 </app-page-state>
 @if (modal) {
   <app-record-form
+    [categories]="transactionCategories()"
     kind="lancamento"
     [initial]="form"
     [editing]="editando"

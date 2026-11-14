@@ -95,8 +95,8 @@ public class BusinessFlowController {
                     """, line.produtoId(), userId, line.quantidade(), "Venda confirmada #" + saleId, saleId, now);
         }
 
-        int financeId = createFinancialEntry("RECEITA", "Venda #" + saleId, total, request.dataVencimento(),
-                request.dataPagamento(), "VENDA", saleId, userId);
+        int financeId = createFinancialEntry("Entrada", "Venda #" + saleId, total, request.dataVencimento(),
+                request.dataPagamento(), "VENDA", saleId, userId, request.contaFinanceiraId());
         return Map.of("id", saleId, "cliente_id", request.clienteId(), "usuario_id", userId,
                 "status", "CONFIRMADA", "forma_pagamento", request.formaPagamento(),
                 "subtotal", subtotal, "desconto", discount, "total", total,
@@ -146,8 +146,8 @@ public class BusinessFlowController {
                     """, line.produtoId(), userId, line.quantidade(), "Compra confirmada #" + purchaseId, purchaseId, now);
         }
 
-        int financeId = createFinancialEntry("DESPESA", "Compra #" + purchaseId, subtotal,
-                request.dataVencimento(), request.dataPagamento(), "COMPRA", purchaseId, userId);
+        int financeId = createFinancialEntry("Saída", "Compra #" + purchaseId, subtotal,
+                request.dataVencimento(), request.dataPagamento(), "COMPRA", purchaseId, userId, request.contaFinanceiraId());
         return Map.of("id", purchaseId, "fornecedor_id", request.fornecedorId(), "usuario_id", userId,
                 "status", "CONFIRMADA", "forma_pagamento", request.formaPagamento(),
                 "subtotal", subtotal, "total", subtotal,
@@ -156,16 +156,17 @@ public class BusinessFlowController {
 
     private int createFinancialEntry(String type, String description, BigDecimal value,
                                      LocalDate dueDate, LocalDate paidDate, String origin,
-                                     int originId, int userId) {
+                                     int originId, int userId, Integer accountId) {
+        if (accountId != null) requireExists("contas_financeiras", accountId);
         String status = paidDate == null ? "PENDENTE" : "PAGO";
         return insert("""
                 INSERT INTO lancamentos_financeiros
-                (tipo, descricao, valor, data_vencimento, data_pagamento, status, origem, origem_id, usuario_id)
-                VALUES (:type, :description, :value, :dueDate, :paidDate, :status, :origin, :originId, :userId)
+                (tipo, descricao, valor, data_vencimento, data_pagamento, status, origem, origem_id, usuario_id, conta_financeira_id)
+                VALUES (:type, :description, :value, :dueDate, :paidDate, :status, :origin, :originId, :userId, :accountId)
                 """, new MapSqlParameterSource().addValue("type", type).addValue("description", description)
                 .addValue("value", value).addValue("dueDate", dueDate).addValue("paidDate", paidDate)
                 .addValue("status", status).addValue("origin", origin).addValue("originId", originId)
-                .addValue("userId", userId));
+                .addValue("userId", userId).addValue("accountId", accountId));
     }
 
     private int insert(String sql, MapSqlParameterSource parameters) {
@@ -225,6 +226,7 @@ public class BusinessFlowController {
                               @NotBlank @jakarta.validation.constraints.Size(max = 100) String formaPagamento,
                               @DecimalMin("0.00") @Digits(integer = 13, fraction = 2) BigDecimal desconto,
                               LocalDate dataVencimento, @PastOrPresent LocalDate dataPagamento,
+                              Integer contaFinanceiraId,
                               @NotEmpty List<@Valid SaleLine> itens) {}
 
     public record SaleLine(@NotNull @Positive Integer produtoId,
@@ -233,6 +235,7 @@ public class BusinessFlowController {
     public record PurchaseRequest(@NotNull @Positive Integer fornecedorId,
                                   @NotBlank @jakarta.validation.constraints.Size(max = 100) String formaPagamento,
                                   LocalDate dataVencimento, @PastOrPresent LocalDate dataPagamento,
+                              Integer contaFinanceiraId,
                                   @NotEmpty List<@Valid PurchaseLine> itens) {}
 
     public record PurchaseLine(@NotNull @Positive Integer produtoId,

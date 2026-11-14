@@ -123,3 +123,7 @@
     gap: var(--fc-space-2);
   }
 }
+
+.operation-summary {
+  background: linear-gradient(120deg, var(--fc-color-navigation-soft), var(--fc-color-surface) 72%);
+}

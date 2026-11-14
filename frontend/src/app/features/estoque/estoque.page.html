@@ -192,6 +192,7 @@
 </app-page-state>
 @if (modal) {
   <app-record-form
+    [categories]="productCategories()"
     kind="produto"
     [initial]="form"
     [editing]="editando"

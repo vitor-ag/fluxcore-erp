@@ -6,6 +6,7 @@ export type IconName =
   | 'stock'
   | 'finance'
   | 'clients'
+  | 'user'
   | 'menu'
   | 'brand'
   | 'incoming'
@@ -35,6 +36,7 @@ export class IconComponent {
     purchases: 'M3 3h2l3 13h11l3-9H6 M9 20h.01 M18 20h.01',
     stock: 'M12 3l9 5v9l-9 5-9-5V8z M3 8l9 5 9-5 M12 13v9 M7.5 5.5l9 5',
     finance: 'M12 2v20 M17 6H9a4 4 0 000 8h6a4 4 0 000-8 M7 18h8a4 4 0 000-8H9',
+    user: 'M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2 M12 11a4 4 0 100-8 4 4 0 000 8',
     clients:
       'M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2 M9 11a4 4 0 100-8 4 4 0 000 8 M22 21v-2a4 4 0 00-3-3.87 M16 3.13a4 4 0 010 7.75',
     menu: 'M4 6h16 M4 12h16 M4 18h16',

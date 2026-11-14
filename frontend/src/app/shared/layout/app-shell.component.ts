@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { API_URL } from '../../core/api/api-url.token';
 import { AuthTokenService } from '../../core/services/auth-token.service';
 import { DOCUMENT } from '@angular/common';
@@ -45,33 +45,65 @@ export class AppShellComponent {
   private readonly injector = inject(Injector);
   private readonly destroyRef = inject(DestroyRef);
   readonly links = [
-    { path: '/dashboard', label: 'Dashboard geral' },
-    { path: '/vendas', label: 'Vendas' },
-    { path: '/compras', label: 'Compras' },
-    { path: '/financeiro', label: 'Financeiro' },
-    { path: '/estoque', label: 'Estoque' },
-    { path: '/clientes', label: 'Clientes' },
+    { path: '/dashboard', icon: 'dashboard', label: 'Dashboard geral' },
+    { path: '/vendas', icon: 'sales', label: 'Vendas' },
+    { path: '/compras', icon: 'purchases', label: 'Compras' },
+    { path: '/financeiro', icon: 'finance', label: 'Financeiro' },
+    { path: '/estoque', icon: 'stock', label: 'Estoque' },
+    { path: '/clientes', icon: 'clients', label: 'Clientes' },
+    { path: '/gestao', icon: 'finance', label: 'Gestão' },
   ] as const;
 
   readonly auth = inject(AuthTokenService);
   private readonly http = inject(HttpClient, { optional: true });
-  private readonly apiUrl = inject(API_URL);
-  readonly loginError = signal('');
+  private readonly profileUrl = inject(API_URL) + '/auth/profile';
+  readonly profile = signal<{ nome: string; email: string } | null>(null);
+  readonly profileError = signal('');
+  readonly profileBusy = signal(false);
 
-  authenticate(email: string, senha: string, nome: string): void {
-    this.loginError.set('');
-    const payload = nome ? { email, senha, nome } : { email, senha };
-    const endpoint = nome ? 'register' : 'login';
+  openProfile(dialog: HTMLDialogElement): void {
+    this.profile.set(null);
+    this.profileError.set('');
+    dialog.showModal();
+    this.profileBusy.set(true);
+    this.http?.get<{ nome: string; email: string }>(this.profileUrl)
+      .pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+        next: (profile) => {
+          this.profile.set(profile);
+          this.profileBusy.set(false);
+        },
+        error: () => {
+          this.profileError.set('Não foi possível carregar seu perfil.');
+          this.profileBusy.set(false);
+        },
+      });
+  }
 
-    this.http?.post(this.apiUrl + '/auth/' + endpoint, payload).subscribe({
-      next: () => {
-        const bytes = new TextEncoder().encode(email.trim() + ':' + senha);
-        this.auth.token.set('Basic ' + btoa(String.fromCharCode(...bytes)));
-
-
-      },
-      error: () => this.loginError.set('Não foi possível autenticar. Confira os dados e a conexão.'),
-    });
+  saveProfile(form: HTMLFormElement, dialog: HTMLDialogElement): void {
+    if (this.profileBusy()) return;
+    const data = new FormData(form);
+    const nome = String(data.get('nome')).trim();
+    const senhaAtual = String(data.get('senhaAtual'));
+    const novaSenha = String(data.get('novaSenha'));
+    this.profileError.set('');
+    if (!nome || (novaSenha && (!senhaAtual || novaSenha.length < 8 || new TextEncoder().encode(novaSenha).length > 72))) {
+      this.profileError.set('Informe o nome. Para trocar a senha, confirme a atual e use pelo menos 8 caracteres e até 72 bytes na nova.');
+      return;
+    }
+    this.profileBusy.set(true);
+    this.http?.put<{ nome: string; email: string }>(this.profileUrl, { nome, senhaAtual, novaSenha })
+      .pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+        next: (profile) => {
+          if (novaSenha) this.auth.setCredentials(profile.email, novaSenha);
+          this.profileBusy.set(false);
+          form.reset();
+          dialog.close();
+        },
+        error: (error: HttpErrorResponse) => {
+          this.profileBusy.set(false);
+          this.profileError.set(error.status === 403 ? 'Senha atual incorreta.' : 'Não foi possível salvar o perfil.');
+        },
+      });
   }
 
   constructor() {

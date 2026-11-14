@@ -1,3 +1,5 @@
+import { HttpClient } from '@angular/common/http';
+import { API_URL } from '../../../core/api/api-url.token';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -6,9 +8,11 @@ import {
   OnDestroy,
   afterNextRender,
   effect,
+  computed,
   input,
   inject,
   output,
+  signal,
   viewChild,
 } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, ValidatorFn, Validators } from '@angular/forms';
@@ -22,6 +26,7 @@ export interface RecordFormValue {
   nome?: string;
   sku?: string;
   categoria?: string;
+  contaFinanceiraId?: number | null;
   preco?: number;
   quantidade?: number;
   estoqueMinimo?: number;
@@ -65,6 +70,21 @@ export class RecordFormComponent implements OnDestroy {
   private opener: HTMLElement | null = null;
   readonly requiredValidator = Validators.required;
   readonly kind = input<'produto' | 'cliente' | 'lancamento'>('lancamento');
+  readonly categories = input<string[]>([]);
+  readonly creatingCategory = signal(false);
+
+  private normalizedCategory(value: string | null): string {
+    const name = value?.trim().replace(/\s+/g, ' ') ?? '';
+    return this.availableCategories().find((category) =>
+      category.toLocaleLowerCase('pt-BR') === name.toLocaleLowerCase('pt-BR'),
+    ) ?? name;
+  }
+
+  selectCategory(value: string): void {
+    this.creatingCategory.set(value === '__new__');
+    this.form.controls.categoria.setValue(value === '__new__' ? '' : value.slice('existing:'.length));
+  }
+
   readonly initial = input<RecordFormValue>({});
   readonly editing = input(false);
   readonly saving = input(false);
@@ -76,6 +96,7 @@ export class RecordFormComponent implements OnDestroy {
     nome: [''],
     sku: [''],
     categoria: [''],
+    contaFinanceiraId: [null as number | null],
     preco: [0],
     quantidade: [0],
     estoqueMinimo: [0],
@@ -89,10 +110,33 @@ export class RecordFormComponent implements OnDestroy {
     status: ['Pendente'],
   });
 
+  readonly registeredCategories = signal<string[]>([]);
+  readonly availableCategories = computed(() => [...new Set([...this.categories(), ...this.registeredCategories()])].sort((a, b) => a.localeCompare(b, 'pt-BR')));
+  readonly accounts = signal<{ id: number; nome: string }[]>([]);
+  readonly accountsUnavailable = signal(false);
+
   constructor() {
+    const http = inject(HttpClient, { optional: true });
+    const api = inject(API_URL);
+    effect((onCleanup) => {
+      if (this.kind() !== 'lancamento' || !http) return;
+      const request = http.get<{ id: number; nome: string }[]>(api + '/contas_financeiras').subscribe({
+        next: (accounts) => this.accounts.set(accounts),
+        error: () => this.accountsUnavailable.set(true),
+      });
+      const categories = http.get<{ nome: string }[]>(api + '/categorias_financeiras').subscribe({
+        next: (rows) => this.registeredCategories.set(rows.map((row) => row.nome).filter(Boolean)),
+        error: () => this.registeredCategories.set([]),
+      });
+      onCleanup(() => {
+        request.unsubscribe();
+        categories.unsubscribe();
+      });
+    });
     effect(() => {
       const initial = this.initial();
       const kind = this.kind();
+      this.creatingCategory.set(false);
       this.form.reset();
       this.form.patchValue(initial);
       if (kind === 'cliente') this.form.controls.tipo.setValue(initial.tipo ?? 'Pessoa física');
@@ -194,7 +238,7 @@ export class RecordFormComponent implements OnDestroy {
         id: initial.id,
         nome: values.nome.trim(),
         sku: values.sku,
-        categoria: values.categoria,
+        categoria: this.normalizedCategory(values.categoria),
         preco: values.preco,
         quantidade: values.quantidade,
         estoqueMinimo: values.estoqueMinimo,
@@ -214,9 +258,10 @@ export class RecordFormComponent implements OnDestroy {
         descricao: values.descricao.trim(),
         valor: values.valor,
         data: values.data,
-        categoria: values.categoria,
+        categoria: this.normalizedCategory(values.categoria),
         tipo: values.tipo,
         status: values.status,
+        contaFinanceiraId: values.contaFinanceiraId,
       });
   }
 

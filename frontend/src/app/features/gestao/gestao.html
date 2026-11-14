@@ -1,0 +1,78 @@
+<div class="title action"><div><h1>Gestão e planejamento</h1><p>Cadastros, metas e projeção do caixa.</p></div></div>
+<nav class="finance-tabs" aria-label="Módulos de gestão">
+  <button class="outline" type="button" [attr.aria-pressed]="tab() === 'cadastros'" (click)="tab.set('cadastros')">Cadastros</button>
+  <button class="outline" type="button" [attr.aria-pressed]="tab() === 'previsao'" (click)="tab.set('previsao')">Previsão de caixa e metas</button>
+  <button class="outline" type="button" [attr.aria-pressed]="tab() === 'estoque'" (click)="tab.set('estoque')">Movimentações de estoque</button>
+</nav>
+@if (tab() === 'cadastros') {
+<section class="box">
+  <h2>Cadastros</h2>
+  <label>Cadastro
+    <select appSelect #resource (change)="selected.set(resources[+resource.value]); draft = {}; error.set(''); load()" [disabled]="busy()">
+      @for (item of resources; track item.path; let i = $index) { <option [value]="i">{{ item.label }}</option> }
+    </select>
+  </label>
+  <form (ngSubmit)="save()">
+    <h3>{{ draft.id ? 'Editar registro' : 'Novo registro' }}</h3>
+    @for (field of selected().fields; track field.key) {
+      <label>{{ field.label }}
+        @if (field.options) {
+          <select appSelect [name]="field.key" [(ngModel)]="draft[field.key]">
+            <option value="">Selecione</option>
+            @for (option of field.options; track option) { <option>{{ option }}</option> }
+          </select>
+        } @else {
+          <input appInput [name]="field.key" [type]="field.type || 'text'" step=".01" [(ngModel)]="draft[field.key]" />
+        }
+      </label>
+    }
+    @if (error()) { <p role="alert">{{ error() }}</p> }
+    <button class="primary" type="submit" [disabled]="busy()">Salvar</button>
+    @if (draft.id) { <button type="button" (click)="draft = {}" [disabled]="busy()">Cancelar edição</button> }
+  </form>
+  <div class="table-scroll">
+    <table>
+      <thead><tr>@for (field of selected().fields; track field.key) { <th scope="col">{{ field.label }}</th> }<th scope="col">Ações</th></tr></thead>
+      <tbody>
+        @for (row of rows(); track row.id) {
+          <tr>@for (field of selected().fields; track field.key) { <td>{{ row[field.key] }}</td> }
+            <td><button type="button" (click)="draft = { ...row }" [disabled]="busy()">Editar</button></td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</section>
+}
+@if (tab() === 'previsao') {
+<app-planning-panel />
+
+}
+@if (tab() === 'estoque') {
+<section class="box">
+  <h2>Conferência de estoque</h2>
+  <form (ngSubmit)="reconcile()">
+    <label>Produto <select appSelect name="product" [(ngModel)]="productId">
+      <option [ngValue]="null">Selecione</option>
+      @for (product of products(); track product.id) { <option [ngValue]="product.id">{{ product['nome'] }} · {{ product['quantidade'] }} em estoque</option> }
+    </select></label>
+        <label>Tipo <select appSelect name="stockMode" [(ngModel)]="stockMode"><option>Conferência</option><option>Entrada</option><option>Saída</option></select></label>
+    <label>{{ stockMode === 'Conferência' ? 'Quantidade conferida' : 'Quantidade movimentada' }} <input appInput name="quantity" type="number" min="0" step="1" [(ngModel)]="quantity" /></label>
+    <label>Motivo <input appInput name="reason" maxlength="500" [(ngModel)]="reason" /></label>
+    <button type="submit" class="primary" [disabled]="stockBusy()">Registrar movimentação</button>
+  </form>
+  @if (stockMessage()) { <p role="status">{{ stockMessage() }}</p> }
+  <h3>Últimas movimentações</h3>
+  <div class="table-scroll">
+    <table>
+      <thead><tr><th>Produto</th><th>Tipo</th><th>Quantidade</th><th>Origem</th><th>Motivo</th></tr></thead>
+      <tbody>
+        @for (movement of movements(); track movement.id) {
+          <tr><td>{{ movement['nome'] }}</td><td>{{ movement['tipo'] }}</td><td>{{ movement['quantidade'] }}</td><td>{{ movement['origem'] }}</td><td>{{ movement['motivo'] }}</td></tr>
+        } @empty { <tr><td colspan="5">Nenhuma movimentação registrada.</td></tr> }
+      </tbody>
+    </table>
+  </div>
+</section>
+}
+<app-user-admin />

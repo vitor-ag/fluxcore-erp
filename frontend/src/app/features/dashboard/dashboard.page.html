@@ -5,17 +5,9 @@
   (retry)="atualizar()"
 >
   <div class="title action">
-    <h1>Dashboard geral</h1>
-    <app-button (pressed)="atualizar()">Atualizar dados</app-button>
+    <div><h1>Dashboard geral</h1><p>Acompanhe o caixa, as pendências financeiras e a reposição de estoque.</p></div>
+    <div><a routerLink="/gestao">Metas e previsão de caixa</a> <app-button (pressed)="atualizar()">Atualizar dados</app-button></div>
   </div>
-
-  <nav class="dashboard-shortcuts" aria-label="Acesso às áreas do sistema">
-    <a routerLink="/vendas">Vendas</a>
-    <a routerLink="/compras">Compras</a>
-    <a routerLink="/financeiro">Financeiro</a>
-    <a routerLink="/estoque">Estoque</a>
-    <a routerLink="/clientes">Clientes</a>
-  </nav>
 
   <section class="balance-summary" aria-label="Resumo dos lançamentos">
     <div class="balance-main">
@@ -49,6 +41,72 @@
       </dl>
       <p class="pending-caption">Lançamentos pendentes</p>
     </div>
+  </section>
+
+  <section class="ledger-section analysis" aria-labelledby="analysis-heading">
+    <div class="section-heading">
+      <div>
+        <h2 id="analysis-heading">Análise financeira</h2>
+        <p>Lançamentos concluídos por data registrada. O mês atual pode estar incompleto.</p>
+      </div>
+      <div class="history-period" role="group" aria-label="Período da análise financeira">
+        @for (months of [6, 12]; track months) {
+          <button type="button" class="outline"
+            [attr.aria-pressed]="analysisMonths() === months"
+            (click)="analysisMonths.set(months)">Últimos {{ months }} meses</button>
+        }
+      </div>
+    </div>
+    @let analysis = monthlyAnalysis();
+    @if (analysis.transactionCount) {
+      <dl class="analysis-totals">
+        <div class="metric-in"><dt>Entradas</dt><dd>{{ analysis.income / 100 | currency: 'BRL' }}</dd></div>
+        <div class="metric-out"><dt>Saídas</dt><dd>{{ analysis.expenses / 100 | currency: 'BRL' }}</dd></div>
+        <div class="metric-net"><dt>Resultado do período</dt><dd>{{ (analysis.income - analysis.expenses) / 100 | currency: 'BRL' }}</dd></div>
+      </dl>
+      <div class="analysis-grid">
+        <section aria-labelledby="monthly-heading">
+          <h3 id="monthly-heading">Entradas e saídas por mês</h3>
+          <table class="analysis-table">
+            <thead><tr><th scope="col">Mês</th><th scope="col">Entradas</th><th scope="col">Saídas</th></tr></thead>
+            <tbody>
+              @for (month of analysis.months; track month.key) {
+                <tr>
+                  <th scope="row">{{ month.date | date: 'MM/yyyy' }}</th>
+                  <td>
+                    {{ month.income / 100 | currency: 'BRL' }}
+                    <div class="analysis-track" aria-hidden="true"><span class="in-bar" [style.width.%]="month.income / analysis.maximum * 100"></span></div>
+                  </td>
+                  <td>
+                    {{ month.expenses / 100 | currency: 'BRL' }}
+                    <div class="analysis-track" aria-hidden="true"><span class="out-bar" [style.width.%]="month.expenses / analysis.maximum * 100"></span></div>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </section>
+        <section aria-labelledby="expenses-heading">
+          <h3 id="expenses-heading">Para onde foram as saídas</h3>
+          @if (analysis.expenses > 0) {
+            <ul class="category-list">
+              @for (category of analysis.top; track $index) {
+                <li>
+                  <div><strong>{{ category.label }}</strong><span>{{ category.value / 100 | currency: 'BRL' }}</span></div>
+                  <div class="analysis-track" aria-hidden="true"><span class="out-bar" [style.width.%]="category.value / analysis.expenses * 100"></span></div>
+                  <small>{{ category.value / analysis.expenses * 100 | number: '1.0-1' }}% das saídas</small>
+                </li>
+              }
+            </ul>
+          } @else {
+            <p>Nenhuma saída concluída no período.</p>
+          }
+        </section>
+      </div>
+    } @else {
+      <app-empty-state title="Nenhum lançamento concluído neste período."
+        description="As entradas e saídas aparecem aqui quando forem concluídas." />
+    }
   </section>
 
   <div class="dashboard-details">
@@ -188,4 +246,5 @@
       />
     }
   </section>
+<app-planning-panel />
 </app-page-state>

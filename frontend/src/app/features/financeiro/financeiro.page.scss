@@ -175,3 +175,13 @@
     gap: var(--fc-space-2);
   }
 }
+
+.finance-tabs {
+  padding: .55rem;
+  border: 1px solid var(--fc-color-border);
+  border-radius: var(--fc-radius-lg);
+  background: var(--fc-color-surface);
+}
+.finance-summary {
+  background: linear-gradient(120deg, var(--fc-color-navigation-soft), var(--fc-color-surface) 72%);
+}

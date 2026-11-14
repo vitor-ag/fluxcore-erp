@@ -4,9 +4,13 @@
     <a class="brand-link" routerLink="/dashboard" aria-label="FluxCore, início"><app-brand /></a>
     <div class="masthead-actions">
       <app-theme-toggle />
-      @if (auth.token()) {
-        <button type="button" class="outline" (click)="auth.clear()">Sair</button>
-      }
+      <details #account class="account">
+        <summary aria-label="Opções da conta" title="Opções da conta"><app-icon name="user" /></summary>
+        <div class="account-actions">
+          <button type="button" class="ghost" (click)="account.open = false; openProfile(profileDialog)">Editar usuário</button>
+          <button type="button" class="ghost" (click)="auth.clear()">Sair</button>
+        </div>
+      </details>
       <button
         type="button"
         class="mobile-toggle outline"
@@ -29,25 +33,33 @@
       <app-icon name="close" />Fechar menu
     </button>
     @for (link of links; track link.path) {
-      <a [routerLink]="link.path" routerLinkActive="active" ariaCurrentWhenActive="page">{{
-        link.label
-      }}</a>
+      <a [routerLink]="link.path" routerLinkActive="active" ariaCurrentWhenActive="page">
+        <app-icon [name]="link.icon" />{{ link.label }}
+      </a>
     }
   </nav>
 </header>
 <main id="main-content" [attr.inert]="mobileMenuOpen() ? '' : null">
-  <section class="content">
-    @if (!auth.token()) {
-      <form (submit)="$event.preventDefault(); authenticate(email.value, senha.value, nome.value.trim())">
-        <label>E-mail <input #email type="email" autocomplete="username" required /></label>
-        <label>Senha <input #senha type="password" autocomplete="current-password" required /></label>
-        <label>Nome para criar uma conta <input #nome autocomplete="name" /></label>
-        <button type="submit">Entrar ou criar conta</button>
-        @if (loginError()) { <p role="alert">{{ loginError() }}</p> }
-      </form>
-    }
-    @if (auth.token()) { <router-outlet /> }
-  </section>
+  <section class="content"><router-outlet /></section>
 </main>
-<app-toast />
-<div [attr.inert]="mobileMenuOpen() ? '' : null"><app-chat /></div>
+<app-toast class="shell-toast" />
+<div class="shell-chat" [attr.inert]="mobileMenuOpen() ? '' : null"><app-chat /></div>
+
+<dialog #profileDialog class="profile-dialog" aria-labelledby="profile-title"
+  (cancel)="profileBusy() && $event.preventDefault()">
+  <h2 id="profile-title">Editar usuário</h2>
+  @if (profileError()) { <p role="alert">{{ profileError() }}</p> }
+  @if (profile(); as user) {
+    <form #profileForm (submit)="$event.preventDefault(); saveProfile(profileForm, profileDialog)">
+      <p>{{ user.email }}</p>
+      <label>Nome <input name="nome" [value]="user.nome" required maxlength="255" autocomplete="name" /></label>
+      <label>Senha atual <input name="senhaAtual" type="password" autocomplete="current-password" /></label>
+      <label>Nova senha <input name="novaSenha" type="password" minlength="8" autocomplete="new-password" /></label>
+      <small>Preencha as senhas somente para alterá-las.</small>
+      <button type="submit" class="primary" [disabled]="profileBusy()">Salvar alterações</button>
+    </form>
+  } @else if (profileBusy()) {
+    <p role="status">Carregando perfil…</p>
+  }
+  <button type="button" class="ghost" [disabled]="profileBusy()" (click)="profileDialog.close()">Fechar</button>
+</dialog>

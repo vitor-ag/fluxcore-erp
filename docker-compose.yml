@@ -33,6 +33,7 @@ services:
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/${MYSQL_DATABASE:-fluxcore_db}?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=America/Sao_Paulo
       SPRING_DATASOURCE_USERNAME: ${MYSQL_USER:-fluxcore}
       SPRING_DATASOURCE_PASSWORD: ${MYSQL_PASSWORD:-fluxcore}
+      FLUXCORE_ADMIN_EMAIL: ${FLUXCORE_ADMIN_EMAIL:-}
       GEMINI_API_KEY: ${GEMINI_API_KEY:-}
       GEMINI_MODEL: ${GEMINI_MODEL:-gemini-3.5-flash-lite}
       GEMINI_BASE_URL: ${GEMINI_BASE_URL:-https://generativelanguage.googleapis.com/v1beta/openai/}

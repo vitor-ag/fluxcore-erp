@@ -20,6 +20,23 @@
     }
     @for (field of fields; track field.name) {
       <label [for]="'record-' + field.name">{{ field.label }}</label>
+      @if (field.name === 'categoria') {
+        <select appSelect id="record-categoria" #category
+          (change)="selectCategory(category.value)">
+          <option value="" [selected]="!initial().categoria">Sem categoria</option>
+          @if (initial().categoria && !availableCategories().includes(initial().categoria!)) {
+            <option [value]="'existing:' + initial().categoria" selected>{{ initial().categoria }}</option>
+          }
+          @for (option of availableCategories(); track option) {
+            <option [value]="'existing:' + option" [selected]="option === initial().categoria">{{ option }}</option>
+          }
+          <option value="__new__">Criar nova categoria…</option>
+        </select>
+        @if (creatingCategory()) {
+          <label for="record-new-category">Nome da nova categoria</label>
+          <input appInput id="record-new-category" formControlName="categoria" maxlength="255" />
+        }
+      } @else {
       <input
         appInput
         [attr.autofocus]="$first ? '' : null"
@@ -41,11 +58,20 @@
         [attr.aria-invalid]="message(field.name) ? 'true' : null"
         [attr.aria-describedby]="message(field.name) ? 'error-' + field.name : null"
       />
+      }
       @if (message(field.name)) {
         <p class="validation" [id]="'error-' + field.name">{{ message(field.name) }}</p>
       }
     }
     @if (kind() === 'lancamento') {
+      <label for="record-account">Conta financeira</label>
+      <select appSelect id="record-account" formControlName="contaFinanceiraId">
+        <option [ngValue]="null">Sem conta vinculada</option>
+        @for (account of accounts(); track account.id) {
+          <option [ngValue]="account.id">{{ account.nome }}</option>
+        }
+      </select>
+      @if (accountsUnavailable()) { <p role="status">Não foi possível carregar as contas.</p> }
       <label for="record-tipo">Tipo</label>
       <select appSelect id="record-tipo" formControlName="tipo">
         <option>Entrada</option>

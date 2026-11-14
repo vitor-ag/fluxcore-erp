@@ -141,6 +141,20 @@ export abstract class WorkspacePage implements OnInit {
     const saidas = sum(items.filter((item) => item.tipo === 'Saída'));
     return { entradas, saidas, saldo: netTotal(items), total: items.length };
   }
+  readonly transactionCategories = computed(() => this.categoryOptions(this.transactions()));
+  readonly productCategories = computed(() => this.categoryOptions(this.products()));
+
+  private categoryOptions(items: { categoria?: string }[]): string[] {
+    const names = new Map<string, string>();
+    for (const item of items) {
+      const name = item.categoria?.trim().replace(/\s+/g, ' ');
+      if (!name) continue;
+      const key = name.toLocaleLowerCase('pt-BR');
+      if (!names.has(key)) names.set(key, name);
+    }
+    return [...names.values()].sort((a, b) => a.localeCompare(b, 'pt-BR'));
+  }
+
   readonly periodItems = computed(() => {
     const query = this.query().trim().toLocaleLowerCase('pt-BR');
     return this.transactions().filter(
@@ -303,6 +317,7 @@ export abstract class WorkspacePage implements OnInit {
               valor: Number(item.valor),
               categoria: item.categoria ?? '',
               status: item.status ?? 'Pendente',
+              contaFinanceiraId: item.contaFinanceiraId,
             })),
           );
           this.products.set(
@@ -414,6 +429,7 @@ export abstract class WorkspacePage implements OnInit {
         data: value.data ?? '',
         categoria: value.categoria ?? '',
         status: value.status ?? 'Pendente',
+        contaFinanceiraId: value.contaFinanceiraId,
       };
       request =
         this.editando && id

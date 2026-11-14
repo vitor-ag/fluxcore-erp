@@ -4,17 +4,17 @@ import { PageStateComponent } from '../../shared/ui/page-state/page-state.compon
 import { RecordFormComponent } from '../../shared/ui/record-form/record-form.component';
 import { RecordTableComponent } from '../../shared/ui/record-table/record-table.component';
 import { TransactionFiltersComponent } from '../../shared/ui/transaction-filters/transaction-filters.component';
-import { ButtonComponent } from '../../shared/ui/button/button.component';
 import { CurrencyPipe } from '@angular/common';
+import { Operacao } from '../operacao/operacao';
 @Component({
   selector: 'app-vendas-page',
   standalone: true,
   imports: [
+    Operacao,
     PageStateComponent,
     RecordFormComponent,
     RecordTableComponent,
     TransactionFiltersComponent,
-    ButtonComponent,
     CurrencyPipe,
   ],
   templateUrl: './vendas.page.html',

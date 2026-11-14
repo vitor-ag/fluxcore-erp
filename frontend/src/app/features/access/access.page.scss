@@ -1,0 +1,43 @@
+.access {
+  min-height: 100dvh;
+  display: grid;
+  place-items: center;
+  padding: clamp(1rem, 5vw, 3rem);
+  background: radial-gradient(ellipse at top, var(--fc-color-primary-soft), transparent 65%),
+    var(--fc-color-canvas);
+}
+
+.panel {
+  width: min(100%, 26rem);
+  padding: clamp(1.25rem, 5vw, 2.5rem);
+  background: var(--fc-color-surface);
+  border: 1px solid var(--fc-color-border);
+  border-radius: var(--fc-radius-lg);
+}
+
+h1 {
+  margin: 1.5rem 0;
+  font-size: clamp(1.5rem, 5vw, 2rem);
+}
+
+form, label {
+  display: grid;
+  gap: 0.75rem;
+}
+
+label { gap: 0.375rem; }
+
+input {
+  width: 100%;
+  min-height: 2.75rem;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--fc-color-control-border);
+  border-radius: var(--fc-radius-md);
+  background: var(--fc-color-surface);
+  color: var(--fc-color-ink);
+}
+
+small { color: var(--fc-color-muted); }
+.error { color: var(--fc-color-danger); margin: 0; }
+.switch { width: 100%; margin-top: 0.75rem; }
+ .panel { box-shadow: 0 24px 65px -42px var(--fc-color-ink); border-top: 4px solid var(--fc-color-primary); }

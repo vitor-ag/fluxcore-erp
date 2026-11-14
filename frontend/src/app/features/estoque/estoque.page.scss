@@ -165,3 +165,16 @@ h2 {
     padding-inline: var(--fc-space-4);
   }
 }
+
+.replenishment {
+  background: linear-gradient(120deg, var(--fc-color-warning-soft), var(--fc-color-surface) 78%);
+}
+
+.catalog-tools {
+  padding: .85rem;
+  border-radius: var(--fc-radius-md);
+  background: var(--fc-color-navigation-soft);
+}
+.product-catalog {
+  box-shadow: 0 8px 24px -22px var(--fc-color-ink);
+}

@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 /** Tables included in the approved MVP data model. */
 public enum MvpResource {
     clientes, fornecedores, categorias_produto, produtos, vendas, venda_itens,
-    compras, compra_itens, movimentacoes_estoque, usuarios,
+    compras, compra_itens, movimentacoes_estoque,
     categorias_financeiras, contas_financeiras, lancamentos_financeiros, metas,
     empresa, previsoes_financeiras, alertas_discrepancia;
 

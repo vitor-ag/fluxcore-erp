@@ -58,6 +58,31 @@ describe('DashboardPage', () => {
     expect(fixture.componentInstance.estoqueBaixo).toBe(1);
     expect(fixture.nativeElement.textContent).toContain('Dashboard geral');
   });
+  it('agrega apenas lançamentos concluídos do período e detalha as categorias de saída', () => {
+    const fixture = TestBed.createComponent(DashboardPage);
+    fixture.detectChanges();
+    const page = fixture.componentInstance;
+    const base = page.transactions()[0];
+    const today = new Date();
+    const month = (offset: number) => {
+      const date = new Date(today.getFullYear(), today.getMonth() - offset, 1);
+      return date.getFullYear() + '-' + String(date.getMonth() + 1).padStart(2, '0') + '-01';
+    };
+    page.transactions.set([
+      { ...base, id: 1, data: month(0), valor: 100.10 },
+      { ...base, id: 2, data: month(0), tipo: 'Saída', valor: 30.25, categoria: 'Compras' },
+      { ...base, id: 3, data: month(0), status: 'Cancelado', valor: 999 },
+      { ...base, id: 4, data: month(8), valor: 50 },
+    ]);
+    fixture.detectChanges();
+    expect(page.monthlyAnalysis().income).toBe(10010);
+    expect(page.monthlyAnalysis().top).toEqual([{ label: 'Compras', value: 3025 }]);
+    expect(fixture.nativeElement.querySelector('.analysis-table tbody').rows.length).toBe(6);
+    page.analysisMonths.set(12);
+    fixture.detectChanges();
+    expect(page.monthlyAnalysis().income).toBe(15010);
+    expect(fixture.nativeElement.querySelector('.analysis-table tbody').rows.length).toBe(12);
+  });
   it('mostra erro sem apresentar zeros como se fossem dados carregados e permite nova tentativa', () => {
     money.listar.mockReturnValueOnce(throwError(() => new Error('offline')));
     const fixture = TestBed.createComponent(DashboardPage);

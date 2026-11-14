@@ -1,0 +1,48 @@
+<button type="button" class="primary" (click)="open(dialog)">{{ compra() ? 'Nova compra' : 'Nova venda' }}</button>
+<dialog #dialog aria-labelledby="operation-title" (cancel)="busy() && $event.preventDefault()">
+  <h2 id="operation-title">{{ compra() ? 'Nova compra' : 'Nova venda' }}</h2>
+  <form (ngSubmit)="confirm(dialog)">
+    @if (error()) { <p role="alert">{{ error() }}</p> }
+    <label>{{ compra() ? 'Fornecedor' : 'Cliente' }}
+      <select appSelect name="party" [(ngModel)]="party" required>
+        <option [ngValue]="null">Selecione</option>
+        @for (option of parties(); track option.id) { <option [ngValue]="option.id">{{ option.nome }}</option> }
+      </select>
+    </label>
+    <details>
+      <summary>{{ compra() ? 'Cadastrar fornecedor' : 'Cadastrar cliente' }}</summary>
+      <label>Nome <input appInput #newParty maxlength="255" /></label>
+      <button type="button" class="outline" (click)="addParty(newParty.value)" [disabled]="busy()">Cadastrar e selecionar</button>
+    </details>
+    <label>Forma de pagamento <input appInput name="method" [(ngModel)]="method" maxlength="100" required /></label>
+    <label>Conta financeira
+      <select appSelect name="account" [(ngModel)]="account">
+        <option [ngValue]="null">Sem conta vinculada</option>
+        @for (option of accounts(); track option.id) {
+          <option [ngValue]="option.id">{{ option.nome }}</option>
+        }
+      </select>
+    </label>
+    <label>Vencimento <input appInput name="due" type="date" [(ngModel)]="due" required /></label>
+    <label>Data do pagamento, se já pago <input appInput name="paid" type="date" [(ngModel)]="paid" /></label>
+    @for (line of lines; track line; let index = $index) {
+      <fieldset>
+        <legend>Produto {{ index + 1 }}</legend>
+        <label>Produto
+          <select appSelect [name]="'product-' + index" [(ngModel)]="line.produtoId" required>
+            <option [ngValue]="null">Selecione</option>
+            @for (product of products(); track product.id) { <option [ngValue]="product.id">{{ product.nome }}</option> }
+          </select>
+        </label>
+        <label>Quantidade <input appInput [name]="'quantity-' + index" type="number" min="1" step="1" [(ngModel)]="line.quantidade" required /></label>
+        @if (compra()) {
+          <label>Custo unitário (R$) <input appInput [name]="'price-' + index" type="number" min="0" step=".01" [(ngModel)]="line.precoUnitario" required /></label>
+        }
+        @if (lines.length > 1) { <button type="button" (click)="lines.splice(index, 1)" [disabled]="busy()">Remover produto</button> }
+      </fieldset>
+    }
+    <button type="button" (click)="add()" [disabled]="busy()">Adicionar produto</button>
+    <button type="button" (click)="dialog.close()" [disabled]="busy()">Cancelar</button>
+    <button type="submit" class="primary" [disabled]="busy() || !parties().length || !products().length">Confirmar</button>
+  </form>
+</dialog>

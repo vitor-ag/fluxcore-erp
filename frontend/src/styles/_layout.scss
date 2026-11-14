@@ -212,3 +212,34 @@ td small {
 .comparison-out {
   background: var(--fc-color-danger);
 }
+
+.title.action {
+  align-items: center;
+  padding: clamp(1rem, 3vw, 1.75rem);
+  border: 1px solid var(--fc-color-border);
+  border-inline-start: 4px solid var(--fc-color-primary);
+  border-radius: var(--fc-radius-lg);
+  background: var(--fc-color-surface);
+}
+.title h1 { line-height: 1.12; letter-spacing: -.025em; }
+.box, .movement-comparison {
+  box-shadow: 0 8px 24px -22px var(--fc-color-ink);
+}
+.table-head {
+  background: color-mix(in srgb, var(--fc-color-navigation-soft) 45%, var(--fc-color-surface));
+}
+.table-scroll tbody tr:hover > td {
+  background: color-mix(in srgb, var(--fc-color-navigation-soft) 55%, var(--fc-color-surface));
+}
+
+main, .content, .table-scroll {
+  min-inline-size: 0;
+}
+main, .content { max-inline-size: 100%; }
+.table-scroll { display: block; inline-size: 100%; position: relative; }
+
+@media (max-width: 850px) {
+  .content > router-outlet + * { display: block; min-width: 0; overflow-wrap: anywhere; }
+  .table-scroll { contain: inline-size; }
+  .title.action > * { min-width: 0; }
+}

@@ -1,0 +1,34 @@
+<section class="box">
+  <h2>Planejamento financeiro</h2>
+  @if (planningError()) { <p role="alert">Não foi possível carregar os indicadores.</p> }
+  @if (planning(); as data) {
+    <p>Saldo consolidado das contas {{ data.saldoContas | currency:'BRL' }}</p>
+    <p>Resultado realizado neste mês {{ data.resultado | currency:'BRL' }}</p>
+    @if (data.alertaSaidas) { <p role="status">As saídas deste mês estão mais de 50% acima da média dos três meses anteriores.</p> }
+        @if (data.alertaEntradas) { <p role="status">As entradas deste mês estão mais de 50% acima da média recente.</p> }
+    <h3>Alertas de estoque</h3>
+    <ul>
+      @for (alert of data.alertasEstoque; track alert.id) {
+        <li>{{ alert.nome }} · {{ alert.tipo }} · {{ alert.quantidade }} · {{ alert.motivo }}</li>
+      } @empty { <li>Nenhuma divergência ou movimentação atípica registrada.</li> }
+    </ul>
+    <h3>Metas do mês</h3>
+    @for (goal of data.metas; track goal.id) {
+      @let actual = goal['tipo'] === 'Vendas' ? data.vendas : data.saidas;
+      @let failed = goal['tipo'] === 'Despesas' && actual > +goal['valor_meta'];
+      @let near = !failed && actual < +goal['valor_meta'] && actual >= +goal['valor_meta'] * 0.8;
+      <p class="goal" [class.danger]="failed" [class.warning]="near">{{ goal['tipo'] }} · {{ actual | currency:'BRL' }} de {{ +goal['valor_meta'] | currency:'BRL' }}
+        · {{ goal['tipo'] === 'Vendas' ? (actual >= +goal['valor_meta'] ? 'Atingida' : 'Em andamento') : (actual > +goal['valor_meta'] ? 'Limite ultrapassado' : 'Dentro do limite') }}</p>
+    } @empty { <p>Nenhuma meta cadastrada para este mês.</p> }
+        <h3>Projeção dos próximos três meses</h3>
+    @if (data.projecoes.length) {
+      <button type="button" class="outline" (click)="exportProjection(data)">Baixar relatório de previsão (CSV)</button>
+    }
+    <p>Média dos últimos três meses completos aplicada ao saldo dos lançamentos concluídos.</p>
+    @for (month of data.projecoes; track month.month) {
+      <p>{{ month.month }} · {{ month.balance | currency:'BRL' }}
+        @if (month.balance < 0) { <strong>· Saldo negativo projetado</strong> }
+      </p>
+    } @empty { <p>Sem movimentação histórica suficiente para projetar.</p> }
+  }
+</section>
