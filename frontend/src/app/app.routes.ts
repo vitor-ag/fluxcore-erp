@@ -1,49 +1,43 @@
 import { Routes } from '@angular/router';
-import { Dashboard } from './Pages/dashboard/dashboard';
-import { Vendas } from './Pages/vendas/vendas';
-import { Compras } from './Pages/compras/compras';
-import { Estoque } from './Pages/estoque/estoque';
-import { Clientes } from './Pages/clientes/clientes';
-import { ContasPagar } from './Pages/contas-pagar/contas-pagar';
-import { ContasReceber } from './Pages/contas-receber/contas-receber';
-import { FluxoCaixa } from './Pages/fluxo-caixa/fluxo-caixa';
-import { Resultado } from './Pages/resultado/resultado';
-
 export const routes: Routes = [
-    {
-        path: "",
-        component: Dashboard
-    },
-     {
-        path: "vendas",
-        component: Vendas
-    },
-     {
-        path: "compras",
-        component: Compras
-    },
-     {
-        path: "estoque",
-        component: Estoque
-    },
-    {
-        path: "clientes",
-        component: Clientes
-    },
-    {
-        path: "contasPagar",
-        component: ContasPagar
-    },
-    {
-        path: "contasReceber",
-        component: ContasReceber
-    },
-    {
-        path: "fluxoCaixa",
-        component: FluxoCaixa
-    },
-    {
-        path: "resultado",
-        component: Resultado
-    }
+  { path: '', pathMatch: 'full', redirectTo: 'dashboard' },
+  {
+    path: 'dashboard',
+    title: 'Dashboard geral · FluxCore',
+    data: { view: 'Dashboard' },
+    loadComponent: () => import('./features/dashboard/dashboard.page').then((m) => m.DashboardPage),
+  },
+  {
+    path: 'vendas',
+    title: 'Vendas · FluxCore',
+    data: { view: 'Vendas' },
+    loadComponent: () => import('./features/vendas/vendas.page').then((m) => m.VendasPage),
+  },
+  {
+    path: 'compras',
+    title: 'Compras · FluxCore',
+    data: { view: 'Compras' },
+    loadComponent: () => import('./features/compras/compras.page').then((m) => m.ComprasPage),
+  },
+  {
+    path: 'estoque',
+    title: 'Estoque · FluxCore',
+    data: { view: 'Estoque' },
+    loadComponent: () => import('./features/estoque/estoque.page').then((m) => m.EstoquePage),
+  },
+  {
+    path: 'financeiro',
+    title: 'Financeiro · FluxCore',
+    data: { view: 'Financeiro' },
+    loadComponent: () =>
+      import('./features/financeiro/financeiro.page').then((m) => m.FinanceiroPage),
+  },
+  {
+    path: 'clientes',
+    title: 'Clientes · FluxCore',
+    data: { view: 'Clientes' },
+    loadComponent: () => import('./features/clientes/clientes.page').then((m) => m.ClientesPage),
+  },
+  { path: 'gestao', title: 'Gestão · FluxCore', loadComponent: () => import('./features/gestao/gestao').then((m) => m.Gestao) },
+  { path: '**', redirectTo: 'dashboard' },
 ];

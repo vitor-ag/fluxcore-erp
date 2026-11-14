@@ -1,59 +1,68 @@
-# Frontend
+# FluxCore ERP — frontend Calibre
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 22.1.5.
+ERP financeiro para micro e pequenas empresas, com seis telas: Dashboard geral, Financeiro, Vendas, Compras, Estoque e Clientes. O frontend existente foi evoluído com Angular 22, TypeScript 6, RxJS, SCSS e Vitest, sem novas dependências.
 
-## Development server
+A identidade **Calibre** usa neutros frios, acento laranja, números tabulares e superfícies planas. O tema claro é o padrão; o botão de tema oferece a versão escura e guarda a escolha localmente.
 
-To start a local development server, run:
+## Abrir a apresentação local
 
-```bash
-ng serve
-```
+Endereço: **[http://localhost:4200](http://localhost:4200)**. A API real está em **http://localhost:8080/api**.
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+O frontend roda com `npm start` na pasta `frontend` da cópia completa de Downloads. A API e o banco usam os containers locais já preparados. Com Docker Desktop aberto, inicie o banco e aguarde o estado saudável antes da API:
 
-## Code scaffolding
+~~~powershell
+docker start fluxcore-mysql
+docker ps --filter name=fluxcore-mysql
+~~~
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+Após o banco ficar saudável:
 
-```bash
-ng generate component component-name
-```
+~~~powershell
+docker start fluxcore-calibre-api
+~~~
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+Esses comandos reutilizam os containers desta máquina; não provisionam uma instalação nova. Os antigos `fluxcore-backend` e `fluxcore-frontend` estão parados e preservados. Não inicie o frontend antigo: ele ocupa 4200. Nomes e portas da outra cópia também podem conflitar ao executar Compose.
 
-```bash
-ng generate --help
-```
+Use **localhost:4200** no navegador. Essa é a origem permitida pelo CORS atual; `127.0.0.1:4200` não é uma origem equivalente para essa configuração.
 
-## Building
+## Abrir no Angular
 
-To build the project run:
+Na pasta `frontend` da cópia completa do repositório:
 
-```bash
-ng build
-```
+~~~powershell
+npm start
+~~~
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+Execute `npm ci` apenas se precisar instalar as dependências do lockfile. A aplicação abre em http://localhost:4200 e atualiza ao salvar os arquivos. Se `ng serve` já estiver ativo nessa porta, use a instância aberta.
 
-## Running unit tests
+Mantenha MySQL e `fluxcore-calibre-api` ativos. Encerre o `ng serve` com Ctrl+C quando terminar.
 
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
+Fora de localhost/127.0.0.1, a URL do frontend é relativa a `/api`, compatível com o proxy nginx existente. Configure a API/MySQL pelo procedimento do repositório principal ao instalar em outra máquina.
 
-```bash
-ng test
-```
+## Verificar
 
-## Running end-to-end tests
+~~~powershell
+npm test -- --watch=false
+npm run build -- --configuration production
+~~~
 
-For end-to-end (e2e) testing, run:
+O build gera `dist/frontend/browser`. Validação desta entrega: **63 testes em 25 arquivos aprovados**, build inicial de **312,04 kB**, incluindo **11,77 kB de CSS**, sem avisos de budget. Os limites originais continuam em 500 kB/1 MB para o inicial e 4 kB/8 kB por estilo de componente.
 
-```bash
-ng e2e
-```
+O Dockerfile e o nginx originais foram mantidos para deploy estático. A imagem Docker do frontend não foi reconstruída nesta entrega; a apresentação local usa `ng serve`.
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+A API real passou por 17 verificações de integração CRUD/CORS. O fluxo de venda pendente → recebimento → saldo/gráfico também foi conferido no navegador. Os registros temporários dos ensaios foram excluídos.
 
-## Additional Resources
+## Organização
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+- `src/app/core`: DTOs, serviços REST, interceptors, notificações, tema e cálculos financeiros.
+- `src/app/shared/layout`: shell, navegação horizontal, menu móvel e foco de navegação.
+- `src/app/shared/ui`: botões, campos, tabela, gráfico SVG, formulário em diálogo nativo, status, toast, estados e seletor de tema.
+- `src/app/features`: seis componentes de rota, carregados por lazy loading.
+- `src/app/features/workspace/workspace-page.ts`: carregamento, filtros, paginação e CRUD compartilhados.
+- `src/styles/`: tokens claros/escuros, base, controles e estruturas globais.
+- `public/fonts`: IBM Plex Sans WOFF2 local, com licença OFL; arquivo de 45.712 bytes.
+- `public/favicon.svg` e `public/fluxcore-mark.svg`: nova marca em dois percursos de fluxo.
+
+O saldo representa entradas concluídas menos saídas concluídas, não saldo bancário. Pendências usam data de lançamento; a API não tem vencimento separado. Vendas e compras registram lançamentos financeiros, sem movimentação automática de estoque.
+
+Consulte [IMPLEMENTACAO.md](IMPLEMENTACAO.md) para contratos, regras, validação e limitações do backend.

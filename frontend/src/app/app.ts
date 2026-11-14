@@ -1,13 +1,17 @@
-import { Component, signal } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
-import { Menu } from './Components/menu/menu';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { AppShellComponent } from './shared/layout/app-shell.component';
+
+import { AuthTokenService } from './core/services/auth-token.service';
+import { AccessPage } from './features/access/access.page';
 
 @Component({
-  imports: [RouterOutlet, Menu],
   selector: 'app-root',
-  styleUrl: './app.css',
+  standalone: true,
+  imports: [AppShellComponent, AccessPage],
   templateUrl: './app.html',
+  styleUrl: './app.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class App {
-  protected readonly title = signal('frontend');
+  readonly auth = inject(AuthTokenService);
 }

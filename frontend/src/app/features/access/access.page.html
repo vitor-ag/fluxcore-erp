@@ -1,0 +1,29 @@
+<main class="access">
+  <section class="panel" aria-labelledby="access-title">
+    <app-brand />
+    <h1 id="access-title">{{ registering() ? 'Criar conta' : 'Entrar no FluxCore' }}</h1>
+    <form #form (submit)="$event.preventDefault(); submit(form)">
+      @if (registering()) {
+        <label>Nome <input name="name" autocomplete="name" maxlength="255" required /></label>
+      }
+      <label>E-mail <input name="email" type="email" autocomplete="username" maxlength="255" required /></label>
+      <label>
+        Senha
+        <input name="password" type="password" required
+          [attr.autocomplete]="registering() ? 'new-password' : 'current-password'"
+          [attr.minlength]="registering() ? 8 : null"
+          [attr.aria-describedby]="registering() ? 'password-hint' : null" />
+      </label>
+      @if (registering()) {
+        <small id="password-hint">Use pelo menos 8 caracteres.</small>
+      }
+      @if (error()) { <p class="error" role="alert">{{ error() }}</p> }
+      <button type="submit" class="primary" [disabled]="pending()">
+        {{ pending() ? 'Aguarde…' : registering() ? 'Criar conta' : 'Entrar' }}
+      </button>
+    </form>
+    <button type="button" class="ghost switch" [disabled]="pending()" (click)="switchMode()">
+      {{ registering() ? 'Já tenho conta' : 'Criar uma conta' }}
+    </button>
+  </section>
+</main>

@@ -1,5 +1,6 @@
 package com.fluxcore.fluxcore_erp.api;
 
+import jakarta.servlet.DispatcherType;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -47,11 +48,17 @@ public class SecurityConfig {
     @Bean
     SecurityFilterChain apiSecurity(HttpSecurity http) throws Exception {
         return http
+                .cors(Customizer.withDefaults())
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize -> authorize
+                        .dispatcherTypeMatchers(DispatcherType.ERROR).permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/auth/register", "/api/auth/login").permitAll()
-                        .anyRequest().authenticated())
+                        .requestMatchers("/api/usuarios", "/api/usuarios/**").denyAll()
+                        .requestMatchers("/api/admin/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/api/**").hasAnyRole("ADMIN", "USER", "VIEWER")
+                        .requestMatchers("/api/auth/profile").hasAnyRole("ADMIN", "USER", "VIEWER")
+                        .anyRequest().hasAnyRole("ADMIN", "USER"))
                 .httpBasic(Customizer.withDefaults())
                 .build();
     }

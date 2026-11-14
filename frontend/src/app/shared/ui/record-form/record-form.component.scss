@@ -1,0 +1,40 @@
+:host {
+  display: contents;
+}
+dialog {
+  margin: auto;
+  color: var(--fc-color-ink);
+}
+dialog::backdrop {
+  background: var(--fc-color-overlay);
+}
+label {
+  margin-top: var(--fc-space-4);
+}
+.record-header {
+  padding-bottom: var(--fc-space-4);
+  margin-bottom: var(--fc-space-5);
+  border-bottom: var(--fc-border-width) solid var(--fc-color-border);
+}
+.record-header h2 {
+  margin-bottom: 0;
+  font-size: var(--fc-font-size-section);
+}
+.validation {
+  margin: var(--fc-space-1) 0 0;
+  color: var(--fc-color-danger);
+  font-size: var(--fc-font-size-sm);
+  line-height: var(--fc-line-height);
+}
+[aria-invalid='true'] {
+  border-color: var(--fc-color-danger);
+}
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: var(--fc-space-3);
+  margin-top: var(--fc-space-6);
+  padding-top: var(--fc-space-5);
+  border-top: var(--fc-border-width) solid var(--fc-color-border);
+}

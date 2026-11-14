@@ -1,0 +1,65 @@
+<a class="skip-link" href="#main-content" (click)="skipToContent($event)">Ir para o conteúdo</a>
+<header class="app-header" [class.menu-open]="mobileMenuOpen()">
+  <div class="masthead" [attr.inert]="mobileMenuOpen() ? '' : null">
+    <a class="brand-link" routerLink="/dashboard" aria-label="FluxCore, início"><app-brand /></a>
+    <div class="masthead-actions">
+      <app-theme-toggle />
+      <details #account class="account">
+        <summary aria-label="Opções da conta" title="Opções da conta"><app-icon name="user" /></summary>
+        <div class="account-actions">
+          <button type="button" class="ghost" (click)="account.open = false; openProfile(profileDialog)">Editar usuário</button>
+          <button type="button" class="ghost" (click)="auth.clear()">Sair</button>
+        </div>
+      </details>
+      <button
+        type="button"
+        class="mobile-toggle outline"
+        aria-controls="main-navigation"
+        [attr.aria-expanded]="mobileMenuOpen()"
+        (click)="openMenu()"
+      >
+        <app-icon name="menu" />Menu
+      </button>
+    </div>
+  </div>
+  <nav
+    id="main-navigation"
+    [class.is-open]="mobileMenuOpen()"
+    [attr.aria-hidden]="mobile() && !mobileMenuOpen() ? 'true' : null"
+    aria-label="Navegação principal"
+    (keydown)="onMenuKeydown($event)"
+  >
+    <button type="button" class="mobile-close ghost" (click)="closeMenu()">
+      <app-icon name="close" />Fechar menu
+    </button>
+    @for (link of links; track link.path) {
+      <a [routerLink]="link.path" routerLinkActive="active" ariaCurrentWhenActive="page">
+        <app-icon [name]="link.icon" />{{ link.label }}
+      </a>
+    }
+  </nav>
+</header>
+<main id="main-content" [attr.inert]="mobileMenuOpen() ? '' : null">
+  <section class="content"><router-outlet /></section>
+</main>
+<app-toast class="shell-toast" />
+<div class="shell-chat" [attr.inert]="mobileMenuOpen() ? '' : null"><app-chat /></div>
+
+<dialog #profileDialog class="profile-dialog" aria-labelledby="profile-title"
+  (cancel)="profileBusy() && $event.preventDefault()">
+  <h2 id="profile-title">Editar usuário</h2>
+  @if (profileError()) { <p role="alert">{{ profileError() }}</p> }
+  @if (profile(); as user) {
+    <form #profileForm (submit)="$event.preventDefault(); saveProfile(profileForm, profileDialog)">
+      <p>{{ user.email }}</p>
+      <label>Nome <input name="nome" [value]="user.nome" required maxlength="255" autocomplete="name" /></label>
+      <label>Senha atual <input name="senhaAtual" type="password" autocomplete="current-password" /></label>
+      <label>Nova senha <input name="novaSenha" type="password" minlength="8" autocomplete="new-password" /></label>
+      <small>Preencha as senhas somente para alterá-las.</small>
+      <button type="submit" class="primary" [disabled]="profileBusy()">Salvar alterações</button>
+    </form>
+  } @else if (profileBusy()) {
+    <p role="status">Carregando perfil…</p>
+  }
+  <button type="button" class="ghost" [disabled]="profileBusy()" (click)="profileDialog.close()">Fechar</button>
+</dialog>

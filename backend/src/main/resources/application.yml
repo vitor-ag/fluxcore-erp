@@ -22,5 +22,13 @@ spring:
 
 # CORS liberado para o frontend local em desenvolvimento (ajustar em produção)
 fluxcore:
+  chat:
+    api-key: ${GEMINI_API_KEY:}
+    model: ${GEMINI_MODEL:gemini-3.5-flash-lite}
+    base-url: ${GEMINI_BASE_URL:https://generativelanguage.googleapis.com/v1beta/openai/}
+    timeout: 20s
+    max-output-tokens: 800
+    max-iterations: 5
+    requests-per-minute: 10
   cors:
     allowed-origins: http://localhost:4200

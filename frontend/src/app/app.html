@@ -1,6 +1,5 @@
-<div class="layout">
-  <app-menu />
-  <main class="content">
-    <router-outlet />
-  </main>
-</div>
+@if (auth.token()) {
+  <app-shell />
+} @else {
+  <app-access />
+}
